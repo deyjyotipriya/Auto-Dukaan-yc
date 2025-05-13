@@ -1,0 +1,169 @@
+{
+  "onboarding": {
+    "welcome": "অটো-দুকানে আপনাকে স্বাগতম",
+    "selectLanguage": "অনুগ্রহ করে আপনার পছন্দের ভাষা নির্বাচন করুন:",
+    "businessName": "আপনার ব্যবসার নাম কি?",
+    "businessCategory": "আপনার ব্যবসার বিভাগ নির্বাচন করুন:",
+    "businessLocation": "আপনার ব্যবসা কোথায় অবস্থিত?",
+    "upiId": "পেমেন্টের জন্য আপনার UPI আইডি লিখুন:",
+    "confirmation": "দারুণ! আপনার দোকান তৈরি হয়েছে। চলুন শুরু করি!",
+    "getStarted": "ড্যাশবোর্ডে যান"
+  },
+  "dashboard": {
+    "title": "ড্যাশবোর্ড",
+    "metrics": {
+      "orders": "অর্ডার",
+      "revenue": "রাজস্ব",
+      "customers": "গ্রাহক"
+    },
+    "recentOrders": "সাম্প্রতিক অর্ডার",
+    "lowStock": "স্টক কম",
+    "notifications": "বিজ্ঞপ্তি"
+  },
+  "products": {
+    "title": "পণ্য",
+    "addProduct": "পণ্য যোগ করুন",
+    "search": "পণ্য খুঁজুন...",
+    "categories": "বিভাগ",
+    "filters": "ফিল্টার",
+    "sort": "সাজান",
+    "grid": "গ্রিড",
+    "list": "তালিকা",
+    "noProducts": "কোন পণ্য পাওয়া যায়নি",
+    "stockStatus": {
+      "inStock": "স্টকে আছে",
+      "lowStock": "স্টক কম",
+      "outOfStock": "স্টক নেই"
+    }
+  },
+  "productDetails": {
+    "edit": "সম্পাদনা করুন",
+    "delete": "মুছুন",
+    "price": "মূল্য",
+    "stock": "স্টক",
+    "description": "বিবরণ",
+    "variants": "ভেরিয়েন্ট",
+    "category": "বিভাগ",
+    "tags": "ট্যাগ"
+  },
+  "addProduct": {
+    "title": "পণ্য যোগ করুন",
+    "basicDetails": "মৌলিক বিবরণ",
+    "images": "ছবি",
+    "pricing": "মূল্য নির্ধারণ",
+    "inventory": "ইনভেন্টরি",
+    "variants": "ভেরিয়েন্ট",
+    "aiRecognition": "AI স্বীকৃতি",
+    "uploadImage": "ছবি আপলোড করুন",
+    "scanProduct": "পণ্য স্ক্যান করুন",
+    "detecting": "পণ্য সনাক্ত করা হচ্ছে...",
+    "detectionComplete": "সনাক্তকরণ সম্পূর্ণ",
+    "confidenceScore": "কনফিডেন্স স্কোর",
+    "fields": {
+      "name": "পণ্যের নাম",
+      "description": "বিবরণ",
+      "price": "মূল্য",
+      "stock": "স্টক পরিমাণ",
+      "category": "বিভাগ",
+      "tags": "ট্যাগ"
+    },
+    "save": "পণ্য সংরক্ষণ করুন",
+    "cancel": "বাতিল করুন"
+  },
+  "orders": {
+    "title": "অর্ডার",
+    "all": "সব",
+    "pending": "অপেক্ষমাণ",
+    "confirmed": "নিশ্চিত",
+    "processing": "প্রক্রিয়াকরণ",
+    "shipped": "পাঠানো হয়েছে",
+    "delivered": "বিতরণ করা হয়েছে",
+    "cancelled": "বাতিল করা হয়েছে",
+    "search": "অর্ডার খুঁজুন...",
+    "noOrders": "কোন অর্ডার পাওয়া যায়নি",
+    "customer": "গ্রাহক",
+    "date": "তারিখ",
+    "status": "অবস্থা",
+    "total": "মোট"
+  },
+  "orderDetails": {
+    "title": "অর্ডার বিবরণ",
+    "orderId": "অর্ডার আইডি",
+    "customerInfo": "গ্রাহক তথ্য",
+    "paymentInfo": "পেমেন্ট তথ্য",
+    "shippingInfo": "শিপিং তথ্য",
+    "items": "অর্ডার আইটেম",
+    "timeline": "অর্ডার টাইমলাইন",
+    "updateStatus": "স্টেটাস আপডেট করুন",
+    "generateInvoice": "ইনভয়েস তৈরি করুন",
+    "generateShipping": "শিপিং লেবেল তৈরি করুন",
+    "cancelled": "অর্ডার বাতিল করা হয়েছে",
+    "paymentStatus": {
+      "paid": "প্রদান করা হয়েছে",
+      "pending": "অপেক্ষমাণ",
+      "failed": "ব্যর্থ"
+    }
+  },
+  "chat": {
+    "title": "চ্যাট",
+    "search": "কন্টাক্ট খুঁজুন...",
+    "noContacts": "কোন কন্টাক্ট পাওয়া যায়নি",
+    "newMessage": "নতুন বার্তা",
+    "typing": "টাইপিং...",
+    "sellCommand": "বিক্রয়",
+    "orderCreated": "অর্ডার তৈরি করা হয়েছে",
+    "sendPaymentLink": "পেমেন্ট লিঙ্ক পাঠান",
+    "productSuggestions": "পণ্য সাজেশন",
+    "quickReplies": "দ্রুত উত্তর",
+    "viewOrder": "অর্ডার দেখুন"
+  },
+  "compliance": {
+    "title": "অনুকূলতা",
+    "invoices": "ইনভয়েস",
+    "taxes": "কর",
+    "records": "রেকর্ড",
+    "regulations": "বিধি",
+    "generateInvoice": "ইনভয়েস তৈরি করুন",
+    "calculateTax": "কর গণনা করুন",
+    "exportRecords": "রেকর্ড এক্সপোর্ট করুন",
+    "complianceChecklist": "অনুকূলতা চেকলিস্ট"
+  },
+  "supplyChain": {
+    "title": "সাপ্লাই চেইন",
+    "current": "বর্তমান: লাইভ বিক্রেতা থেকে গ্রাহকদের কাছে",
+    "nextPhase": "পরবর্তী পর্যায়: বিক্রেতা থেকে পাইকারি বিক্রেতা",
+    "future": "ভবিষ্যৎ: পাইকারি বিক্রেতা থেকে ব্র্যান্ড",
+    "vision": "দৃষ্টি: সম্পূর্ণ বাণিজ্য পরিবেশ",
+    "connect": "পাইকারি বিক্রেতাদের সাথে সংযোগ করুন",
+    "manage": "সংযোগ পরিচালনা করুন",
+    "dataFlow": "ডেটা প্রবাহ"
+  },
+  "settings": {
+    "title": "সেটিংস",
+    "account": "অ্যাকাউন্ট",
+    "business": "ব্যবসা",
+    "notifications": "বিজ্ঞপ্তি",
+    "language": "ভাষা",
+    "privacy": "গোপনীয়তা",
+    "help": "সাহায্য এবং সমর্থন",
+    "logout": "লগআউট"
+  },
+  "common": {
+    "save": "সংরক্ষণ করুন",
+    "cancel": "বাতিল করুন",
+    "delete": "মুছুন",
+    "edit": "সম্পাদনা করুন",
+    "view": "দেখুন",
+    "search": "খুঁজুন",
+    "filter": "ফিল্টার",
+    "sort": "সাজান",
+    "back": "পিছনে",
+    "next": "পরবর্তী",
+    "submit": "জমা দিন",
+    "loading": "লোড হচ্ছে...",
+    "success": "সফল",
+    "error": "ত্রুটি",
+    "warning": "সতর্কতা",
+    "info": "তথ্য"
+  }
+}

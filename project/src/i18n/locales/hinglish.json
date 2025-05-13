@@ -1,0 +1,169 @@
+{
+  "onboarding": {
+    "welcome": "Auto-Dukaan mein aapka swagat hai",
+    "selectLanguage": "Please apni preferred language select kijiye:",
+    "businessName": "Aapke business ka naam kya hai?",
+    "businessCategory": "Apne business ki category select kijiye:",
+    "businessLocation": "Aapka business kahan located hai?",
+    "upiId": "Payments ke liye apna UPI ID enter kijiye:",
+    "confirmation": "Great! Aapki store create ho gayi hai. Chaliye shuru karte hain!",
+    "getStarted": "Dashboard par jaayein"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "metrics": {
+      "orders": "Orders",
+      "revenue": "Revenue",
+      "customers": "Customers"
+    },
+    "recentOrders": "Recent Orders",
+    "lowStock": "Low Stock",
+    "notifications": "Notifications"
+  },
+  "products": {
+    "title": "Products",
+    "addProduct": "Product Add Karein",
+    "search": "Products search karein...",
+    "categories": "Categories",
+    "filters": "Filters",
+    "sort": "Sort",
+    "grid": "Grid",
+    "list": "List",
+    "noProducts": "Koi products nahi mile",
+    "stockStatus": {
+      "inStock": "In Stock",
+      "lowStock": "Low Stock",
+      "outOfStock": "Out of Stock"
+    }
+  },
+  "productDetails": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "price": "Price",
+    "stock": "Stock",
+    "description": "Description",
+    "variants": "Variants",
+    "category": "Category",
+    "tags": "Tags"
+  },
+  "addProduct": {
+    "title": "Product Add Karein",
+    "basicDetails": "Basic Details",
+    "images": "Images",
+    "pricing": "Pricing",
+    "inventory": "Inventory",
+    "variants": "Variants",
+    "aiRecognition": "AI Recognition",
+    "uploadImage": "Image Upload Karein",
+    "scanProduct": "Product Scan Karein",
+    "detecting": "Product Detect Kar Raha Hai...",
+    "detectionComplete": "Detection Complete",
+    "confidenceScore": "Confidence Score",
+    "fields": {
+      "name": "Product Name",
+      "description": "Description",
+      "price": "Price",
+      "stock": "Stock Quantity",
+      "category": "Category",
+      "tags": "Tags"
+    },
+    "save": "Product Save Karein",
+    "cancel": "Cancel"
+  },
+  "orders": {
+    "title": "Orders",
+    "all": "All",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "processing": "Processing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled",
+    "search": "Orders search karein...",
+    "noOrders": "Koi orders nahi mile",
+    "customer": "Customer",
+    "date": "Date",
+    "status": "Status",
+    "total": "Total"
+  },
+  "orderDetails": {
+    "title": "Order Details",
+    "orderId": "Order ID",
+    "customerInfo": "Customer Information",
+    "paymentInfo": "Payment Information",
+    "shippingInfo": "Shipping Information",
+    "items": "Order Items",
+    "timeline": "Order Timeline",
+    "updateStatus": "Status Update Karein",
+    "generateInvoice": "Invoice Generate Karein",
+    "generateShipping": "Shipping Label Generate Karein",
+    "cancelled": "Order Cancel Ho Gaya",
+    "paymentStatus": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "failed": "Failed"
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "search": "Contacts search karein...",
+    "noContacts": "Koi contacts nahi mile",
+    "newMessage": "New Message",
+    "typing": "typing...",
+    "sellCommand": "sell",
+    "orderCreated": "Order create ho gaya",
+    "sendPaymentLink": "Payment Link Bhejein",
+    "productSuggestions": "Product Suggestions",
+    "quickReplies": "Quick Replies",
+    "viewOrder": "Order Dekhen"
+  },
+  "compliance": {
+    "title": "Compliance",
+    "invoices": "Invoices",
+    "taxes": "Taxes",
+    "records": "Records",
+    "regulations": "Regulations",
+    "generateInvoice": "Invoice Generate Karein",
+    "calculateTax": "Tax Calculate Karein",
+    "exportRecords": "Records Export Karein",
+    "complianceChecklist": "Compliance Checklist"
+  },
+  "supplyChain": {
+    "title": "Supply Chain",
+    "current": "Current: Live Sellers to Customers",
+    "nextPhase": "Next Phase: Sellers to Wholesalers",
+    "future": "Future: Wholesalers to Brands",
+    "vision": "Vision: Complete Commerce Ecosystem",
+    "connect": "Wholesalers Se Connect Karein",
+    "manage": "Connections Manage Karein",
+    "dataFlow": "Data Flow"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "business": "Business",
+    "notifications": "Notifications",
+    "language": "Language",
+    "privacy": "Privacy",
+    "help": "Help & Support",
+    "logout": "Logout"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info"
+  }
+}

@@ -1,9 +1,8 @@
 {
   "version": 2,
-  "installCommand": "cd project && npm install",
-  "buildCommand": "cd project && npm run build",
-  "outputDirectory": "project/dist",
-  "routes": [
-    { "src": "/(.*)", "dest": "/project/dist/$1" }
-  ]
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/project/$1" }
+  ],
+  "buildCommand": "cd project && npm install && npm run build",
+  "outputDirectory": "project/dist"
 }

@@ -1,0 +1,169 @@
+{
+  "onboarding": {
+    "welcome": "ऑटो-दुकान में आपका स्वागत है",
+    "selectLanguage": "कृपया अपनी पसंदीदा भाषा चुनें:",
+    "businessName": "आपके व्यापार का नाम क्या है?",
+    "businessCategory": "अपने व्यापार की श्रेणी चुनें:",
+    "businessLocation": "आपका व्यापार कहाँ स्थित है?",
+    "upiId": "भुगतान के लिए अपना UPI ID दर्ज करें:",
+    "confirmation": "बढ़िया! आपकी दुकान बन गई है। आइए शुरू करें!",
+    "getStarted": "डैशबोर्ड पर जाएं"
+  },
+  "dashboard": {
+    "title": "डैशबोर्ड",
+    "metrics": {
+      "orders": "आदेश",
+      "revenue": "राजस्व",
+      "customers": "ग्राहक"
+    },
+    "recentOrders": "हाल के आदेश",
+    "lowStock": "कम स्टॉक",
+    "notifications": "सूचनाएँ"
+  },
+  "products": {
+    "title": "उत्पाद",
+    "addProduct": "उत्पाद जोड़ें",
+    "search": "उत्पाद खोजें...",
+    "categories": "श्रेणियाँ",
+    "filters": "फिल्टर",
+    "sort": "क्रमबद्ध करें",
+    "grid": "ग्रिड",
+    "list": "सूची",
+    "noProducts": "कोई उत्पाद नहीं मिला",
+    "stockStatus": {
+      "inStock": "स्टॉक में",
+      "lowStock": "कम स्टॉक",
+      "outOfStock": "स्टॉक ख़त्म"
+    }
+  },
+  "productDetails": {
+    "edit": "संपादित करें",
+    "delete": "हटाएं",
+    "price": "मूल्य",
+    "stock": "स्टॉक",
+    "description": "विवरण",
+    "variants": "प्रकार",
+    "category": "श्रेणी",
+    "tags": "टैग"
+  },
+  "addProduct": {
+    "title": "उत्पाद जोड़ें",
+    "basicDetails": "मूल विवरण",
+    "images": "छवियां",
+    "pricing": "मूल्य निर्धारण",
+    "inventory": "इन्वेंट्री",
+    "variants": "प्रकार",
+    "aiRecognition": "AI पहचान",
+    "uploadImage": "छवि अपलोड करें",
+    "scanProduct": "उत्पाद स्कैन करें",
+    "detecting": "उत्पाद का पता लगा रहा है...",
+    "detectionComplete": "पहचान पूर्ण",
+    "confidenceScore": "कॉन्फिडेंस स्कोर",
+    "fields": {
+      "name": "उत्पाद का नाम",
+      "description": "विवरण",
+      "price": "मूल्य",
+      "stock": "स्टॉक मात्रा",
+      "category": "श्रेणी",
+      "tags": "टैग"
+    },
+    "save": "उत्पाद सहेजें",
+    "cancel": "रद्द करें"
+  },
+  "orders": {
+    "title": "आदेश",
+    "all": "सभी",
+    "pending": "लंबित",
+    "confirmed": "पुष्टि किया गया",
+    "processing": "प्रोसेसिंग",
+    "shipped": "भेज दिया गया",
+    "delivered": "वितरित",
+    "cancelled": "रद्द किया गया",
+    "search": "आदेश खोजें...",
+    "noOrders": "कोई आदेश नहीं मिला",
+    "customer": "ग्राहक",
+    "date": "तारीख",
+    "status": "स्थिति",
+    "total": "कुल"
+  },
+  "orderDetails": {
+    "title": "आदेश विवरण",
+    "orderId": "आदेश ID",
+    "customerInfo": "ग्राहक जानकारी",
+    "paymentInfo": "भुगतान जानकारी",
+    "shippingInfo": "शिपिंग जानकारी",
+    "items": "आदेश वस्तुएं",
+    "timeline": "आदेश टाइमलाइन",
+    "updateStatus": "स्थिति अपडेट करें",
+    "generateInvoice": "इनवॉइस जेनरेट करें",
+    "generateShipping": "शिपिंग लेबल जेनरेट करें",
+    "cancelled": "आदेश रद्द किया गया",
+    "paymentStatus": {
+      "paid": "भुगतान किया गया",
+      "pending": "लंबित",
+      "failed": "विफल"
+    }
+  },
+  "chat": {
+    "title": "चैट",
+    "search": "संपर्क खोजें...",
+    "noContacts": "कोई संपर्क नहीं मिला",
+    "newMessage": "नया संदेश",
+    "typing": "टाइप कर रहा है...",
+    "sellCommand": "बेचें",
+    "orderCreated": "आदेश बनाया गया",
+    "sendPaymentLink": "भुगतान लिंक भेजें",
+    "productSuggestions": "उत्पाद सुझाव",
+    "quickReplies": "त्वरित उत्तर",
+    "viewOrder": "आदेश देखें"
+  },
+  "compliance": {
+    "title": "अनुपालन",
+    "invoices": "इनवॉइस",
+    "taxes": "कर",
+    "records": "रिकॉर्ड",
+    "regulations": "नियम",
+    "generateInvoice": "इनवॉइस जेनरेट करें",
+    "calculateTax": "कर की गणना करें",
+    "exportRecords": "रिकॉर्ड निर्यात करें",
+    "complianceChecklist": "अनुपालन चेकलिस्ट"
+  },
+  "supplyChain": {
+    "title": "आपूर्ति श्रृंखला",
+    "current": "वर्तमान: लाइव विक्रेताओं से ग्राहकों तक",
+    "nextPhase": "अगला चरण: विक्रेताओं से थोक विक्रेताओं तक",
+    "future": "भविष्य: थोक विक्रेताओं से ब्रांड तक",
+    "vision": "दृष्टि: संपूर्ण वाणिज्य पारिस्थितिकी तंत्र",
+    "connect": "थोक विक्रेताओं से जुड़ें",
+    "manage": "कनेक्शन प्रबंधित करें",
+    "dataFlow": "डेटा प्रवाह"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "account": "खाता",
+    "business": "व्यापार",
+    "notifications": "सूचनाएँ",
+    "language": "भाषा",
+    "privacy": "गोपनीयता",
+    "help": "सहायता और समर्थन",
+    "logout": "लॉगआउट"
+  },
+  "common": {
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "view": "देखें",
+    "search": "खोजें",
+    "filter": "फिल्टर",
+    "sort": "क्रमबद्ध करें",
+    "back": "वापस",
+    "next": "अगला",
+    "submit": "जमा करें",
+    "loading": "लोड हो रहा है...",
+    "success": "सफलता",
+    "error": "त्रुटि",
+    "warning": "चेतावनी",
+    "info": "जानकारी"
+  }
+}
