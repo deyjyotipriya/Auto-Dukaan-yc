@@ -1,0 +1,169 @@
+{
+  "onboarding": {
+    "welcome": "Auto-Dukaan e apnake swagotom",
+    "selectLanguage": "Please apnar pochonder bhasha select korun:",
+    "businessName": "Apnar business er naam ki?",
+    "businessCategory": "Apnar business er category select korun:",
+    "businessLocation": "Apnar business kothay located?",
+    "upiId": "Payments er jonno apnar UPI ID enter korun:",
+    "confirmation": "Great! Apnar store create hoyeche. Cholun shuru kori!",
+    "getStarted": "Dashboard e jan"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "metrics": {
+      "orders": "Orders",
+      "revenue": "Revenue",
+      "customers": "Customers"
+    },
+    "recentOrders": "Recent Orders",
+    "lowStock": "Low Stock",
+    "notifications": "Notifications"
+  },
+  "products": {
+    "title": "Products",
+    "addProduct": "Product Add Korun",
+    "search": "Products search korun...",
+    "categories": "Categories",
+    "filters": "Filters",
+    "sort": "Sort",
+    "grid": "Grid",
+    "list": "List",
+    "noProducts": "Kono products pawa jaini",
+    "stockStatus": {
+      "inStock": "In Stock",
+      "lowStock": "Low Stock",
+      "outOfStock": "Out of Stock"
+    }
+  },
+  "productDetails": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "price": "Price",
+    "stock": "Stock",
+    "description": "Description",
+    "variants": "Variants",
+    "category": "Category",
+    "tags": "Tags"
+  },
+  "addProduct": {
+    "title": "Product Add Korun",
+    "basicDetails": "Basic Details",
+    "images": "Images",
+    "pricing": "Pricing",
+    "inventory": "Inventory",
+    "variants": "Variants",
+    "aiRecognition": "AI Recognition",
+    "uploadImage": "Image Upload Korun",
+    "scanProduct": "Product Scan Korun",
+    "detecting": "Product Detect Korche...",
+    "detectionComplete": "Detection Complete",
+    "confidenceScore": "Confidence Score",
+    "fields": {
+      "name": "Product Name",
+      "description": "Description",
+      "price": "Price",
+      "stock": "Stock Quantity",
+      "category": "Category",
+      "tags": "Tags"
+    },
+    "save": "Product Save Korun",
+    "cancel": "Cancel"
+  },
+  "orders": {
+    "title": "Orders",
+    "all": "All",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "processing": "Processing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled",
+    "search": "Orders search korun...",
+    "noOrders": "Kono orders pawa jaini",
+    "customer": "Customer",
+    "date": "Date",
+    "status": "Status",
+    "total": "Total"
+  },
+  "orderDetails": {
+    "title": "Order Details",
+    "orderId": "Order ID",
+    "customerInfo": "Customer Information",
+    "paymentInfo": "Payment Information",
+    "shippingInfo": "Shipping Information",
+    "items": "Order Items",
+    "timeline": "Order Timeline",
+    "updateStatus": "Status Update Korun",
+    "generateInvoice": "Invoice Generate Korun",
+    "generateShipping": "Shipping Label Generate Korun",
+    "cancelled": "Order Cancel Hoye Geche",
+    "paymentStatus": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "failed": "Failed"
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "search": "Contacts search korun...",
+    "noContacts": "Kono contacts pawa jaini",
+    "newMessage": "New Message",
+    "typing": "typing...",
+    "sellCommand": "sell",
+    "orderCreated": "Order create hoyeche",
+    "sendPaymentLink": "Payment Link Pathan",
+    "productSuggestions": "Product Suggestions",
+    "quickReplies": "Quick Replies",
+    "viewOrder": "Order Dekhun"
+  },
+  "compliance": {
+    "title": "Compliance",
+    "invoices": "Invoices",
+    "taxes": "Taxes",
+    "records": "Records",
+    "regulations": "Regulations",
+    "generateInvoice": "Invoice Generate Korun",
+    "calculateTax": "Tax Calculate Korun",
+    "exportRecords": "Records Export Korun",
+    "complianceChecklist": "Compliance Checklist"
+  },
+  "supplyChain": {
+    "title": "Supply Chain",
+    "current": "Current: Live Sellers to Customers",
+    "nextPhase": "Next Phase: Sellers to Wholesalers",
+    "future": "Future: Wholesalers to Brands",
+    "vision": "Vision: Complete Commerce Ecosystem",
+    "connect": "Wholesalers Er Sathe Connect Korun",
+    "manage": "Connections Manage Korun",
+    "dataFlow": "Data Flow"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "business": "Business",
+    "notifications": "Notifications",
+    "language": "Language",
+    "privacy": "Privacy",
+    "help": "Help & Support",
+    "logout": "Logout"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info"
+  }
+}

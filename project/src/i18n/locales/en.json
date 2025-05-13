@@ -1,0 +1,170 @@
+{
+  "onboarding": {
+    "welcome": "Welcome to Auto-Dukaan",
+    "selectLanguage": "Please select your preferred language:",
+    "clickChatLanguage": "Select a language to continue",
+    "businessName": "What's your business name?",
+    "businessCategory": "Select your business category:",
+    "businessLocation": "Where is your business located?",
+    "upiId": "Enter your UPI ID for payments:",
+    "confirmation": "Great! Your store is created. Let's get started!",
+    "getStarted": "Go to Dashboard"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "metrics": {
+      "orders": "Orders",
+      "revenue": "Revenue",
+      "customers": "Customers"
+    },
+    "recentOrders": "Recent Orders",
+    "lowStock": "Low Stock",
+    "notifications": "Notifications"
+  },
+  "products": {
+    "title": "Products",
+    "addProduct": "Add Product",
+    "search": "Search products...",
+    "categories": "Categories",
+    "filters": "Filters",
+    "sort": "Sort",
+    "grid": "Grid",
+    "list": "List",
+    "noProducts": "No products found",
+    "stockStatus": {
+      "inStock": "In Stock",
+      "lowStock": "Low Stock",
+      "outOfStock": "Out of Stock"
+    }
+  },
+  "productDetails": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "price": "Price",
+    "stock": "Stock",
+    "description": "Description",
+    "variants": "Variants",
+    "category": "Category",
+    "tags": "Tags"
+  },
+  "addProduct": {
+    "title": "Add Product",
+    "basicDetails": "Basic Details",
+    "images": "Images",
+    "pricing": "Pricing",
+    "inventory": "Inventory",
+    "variants": "Variants",
+    "aiRecognition": "AI Recognition",
+    "uploadImage": "Upload Image",
+    "scanProduct": "Scan Product",
+    "detecting": "Detecting Product...",
+    "detectionComplete": "Detection Complete",
+    "confidenceScore": "Confidence Score",
+    "fields": {
+      "name": "Product Name",
+      "description": "Description",
+      "price": "Price",
+      "stock": "Stock Quantity",
+      "category": "Category",
+      "tags": "Tags"
+    },
+    "save": "Save Product",
+    "cancel": "Cancel"
+  },
+  "orders": {
+    "title": "Orders",
+    "all": "All",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "processing": "Processing",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled",
+    "search": "Search orders...",
+    "noOrders": "No orders found",
+    "customer": "Customer",
+    "date": "Date",
+    "status": "Status",
+    "total": "Total"
+  },
+  "orderDetails": {
+    "title": "Order Details",
+    "orderId": "Order ID",
+    "customerInfo": "Customer Information",
+    "paymentInfo": "Payment Information",
+    "shippingInfo": "Shipping Information",
+    "items": "Order Items",
+    "timeline": "Order Timeline",
+    "updateStatus": "Update Status",
+    "generateInvoice": "Generate Invoice",
+    "generateShipping": "Generate Shipping Label",
+    "cancelled": "Order Cancelled",
+    "paymentStatus": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "failed": "Failed"
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "search": "Search contacts...",
+    "noContacts": "No contacts found",
+    "newMessage": "New Message",
+    "typing": "typing...",
+    "sellCommand": "sell",
+    "orderCreated": "Order created",
+    "sendPaymentLink": "Send Payment Link",
+    "productSuggestions": "Product Suggestions",
+    "quickReplies": "Quick Replies",
+    "viewOrder": "View Order"
+  },
+  "compliance": {
+    "title": "Compliance",
+    "invoices": "Invoices",
+    "taxes": "Taxes",
+    "records": "Records",
+    "regulations": "Regulations",
+    "generateInvoice": "Generate Invoice",
+    "calculateTax": "Calculate Tax",
+    "exportRecords": "Export Records",
+    "complianceChecklist": "Compliance Checklist"
+  },
+  "supplyChain": {
+    "title": "Supply Chain",
+    "current": "Current: Live Sellers to Customers",
+    "nextPhase": "Next Phase: Sellers to Wholesalers",
+    "future": "Future: Wholesalers to Brands",
+    "vision": "Vision: Complete Commerce Ecosystem",
+    "connect": "Connect with Wholesalers",
+    "manage": "Manage Connections",
+    "dataFlow": "Data Flow"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account",
+    "business": "Business",
+    "notifications": "Notifications",
+    "language": "Language",
+    "privacy": "Privacy",
+    "help": "Help & Support",
+    "logout": "Logout"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Info"
+  }
+}
