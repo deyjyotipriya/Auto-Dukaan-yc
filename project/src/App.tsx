@@ -30,6 +30,11 @@ import { TutorialProvider } from './contexts/TutorialContext';
 // Use our safe version of useSelector for Redux
 import { useSelector, useAppSelector } from './utils/reduxFix';
 import { selectIsOnboarded } from './store/slices/userSlice';
+// Import Error Boundaries
+import ErrorBoundary from './components/common/ErrorBoundary';
+import ReduxErrorBoundary from './components/common/ReduxErrorBoundary';
+import APIErrorBoundary from './components/common/APIErrorBoundary';
+import LivestreamErrorBoundary from './components/common/LivestreamErrorBoundary';
 
 function App() {
   const location = useLocation();
@@ -76,59 +81,163 @@ function App() {
   }
 
   return (
-    <TutorialProvider>
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
-          {/* Traditional Onboarding */}
-          <Route path="/onboarding" element={<Onboarding />} />
-          
-          {/* WhatsApp Onboarding */}
-          <Route path="/whatsapp-onboarding" element={<WhatsAppOnboarding />} />
-          
-          {/* Buyer-facing Storefront - Using the fixed version */}
-          <Route path="/store/:storeId" element={<BuyerView />} />
-          
-          {/* For testing purposes, provide a direct path to the HTML version */}
-          <Route path="/store-html/:storeId" element={
-            <iframe 
-              src="/buyer-view.html" 
-              style={{ width: '100%', height: '100vh', border: 'none' }} 
-              title="Store View"
-            />
-          } />
-          
-          {/* Main App Routes */}
-          <Route path="/" element={!isOnboarded ? <WhatsAppOnboarding /> : <MainLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="products" element={<Products />} />
-            <Route path="products/:id" element={<ProductDetail />} />
-            <Route path="products/add" element={<EnhancedAddProduct />} />
-            <Route path="orders" element={<Orders />} />
-            <Route path="orders/:id" element={<EnhancedOrderDetail />} />
-            <Route path="chat" element={<Chat />} />
-            <Route path="results" element={<ResultsManagement />} />
-            <Route path="compliance" element={<Compliance />} />
-            <Route path="supply-chain" element={<SupplyChain />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="storefront" element={<StorefrontUnified />} />
-            <Route path="storefront/:tab" element={<StorefrontUnified />} />
-            <Route path="storefront-management" element={<StorefrontManagement />} />
-            <Route path="storefront-demo" element={<StorefrontDemo />} />
-            <Route path="storefront-settings" element={<StorefrontSettings />} />
-            <Route path="livestream-catalog" element={<LivestreamCatalog />} />
-          </Route>
-        </Routes>
-      </AnimatePresence>
-      
-      {/* Choose which tutorial system to use - prefer the new one */}
-      {!location.pathname.includes('onboarding') && (
-        !showTutorial ? (
-          <TutorialOverlay />
-        ) : (
-          <GuidedTutorial isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
-        )
-      )}
-    </TutorialProvider>
+    <ErrorBoundary
+      fallback={
+        <div className="flex h-screen w-full items-center justify-center bg-white">
+          <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md">
+            <h2 className="text-2xl font-bold text-red-600 mb-4">Something went wrong</h2>
+            <p className="text-gray-700 mb-4">We're sorry, but something went wrong with the application. Please refresh the page or try again later.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+            >
+              Refresh Page
+            </button>
+          </div>
+        </div>
+      }
+      onError={(error, errorInfo) => {
+        console.error('App Error:', error);
+        console.error('Error Info:', errorInfo);
+        // Here you could send error to a monitoring service like Sentry
+      }}
+    >
+      <TutorialProvider>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            {/* Traditional Onboarding */}
+            <Route path="/onboarding" element={<Onboarding />} />
+            
+            {/* WhatsApp Onboarding */}
+            <Route path="/whatsapp-onboarding" element={<WhatsAppOnboarding />} />
+            
+            {/* Buyer-facing Storefront - Using the fixed version */}
+            <Route path="/store/:storeId" element={
+              <ErrorBoundary 
+                fallback={<div className="p-4 text-center">Unable to load store. Please try again later.</div>}
+              >
+                <BuyerView />
+              </ErrorBoundary>
+            } />
+            
+            {/* For testing purposes, provide a direct path to the HTML version */}
+            <Route path="/store-html/:storeId" element={
+              <iframe 
+                src="/buyer-view.html" 
+                style={{ width: '100%', height: '100vh', border: 'none' }} 
+                title="Store View"
+              />
+            } />
+            
+            {/* Main App Routes */}
+            <Route path="/" element={
+              <ReduxErrorBoundary>
+                {!isOnboarded ? <WhatsAppOnboarding /> : <MainLayout />}
+              </ReduxErrorBoundary>
+            }>
+              <Route index element={
+                <ErrorBoundary>
+                  <Dashboard />
+                </ErrorBoundary>
+              } />
+              <Route path="products" element={
+                <ErrorBoundary>
+                  <Products />
+                </ErrorBoundary>
+              } />
+              <Route path="products/:id" element={
+                <ErrorBoundary>
+                  <ProductDetail />
+                </ErrorBoundary>
+              } />
+              <Route path="products/add" element={
+                <ErrorBoundary>
+                  <EnhancedAddProduct />
+                </ErrorBoundary>
+              } />
+              <Route path="orders" element={
+                <ErrorBoundary>
+                  <Orders />
+                </ErrorBoundary>
+              } />
+              <Route path="orders/:id" element={
+                <ErrorBoundary>
+                  <EnhancedOrderDetail />
+                </ErrorBoundary>
+              } />
+              <Route path="chat" element={
+                <ErrorBoundary>
+                  <Chat />
+                </ErrorBoundary>
+              } />
+              <Route path="results" element={
+                <ErrorBoundary>
+                  <ResultsManagement />
+                </ErrorBoundary>
+              } />
+              <Route path="compliance" element={
+                <ErrorBoundary>
+                  <Compliance />
+                </ErrorBoundary>
+              } />
+              <Route path="supply-chain" element={
+                <ErrorBoundary>
+                  <SupplyChain />
+                </ErrorBoundary>
+              } />
+              <Route path="settings" element={
+                <ErrorBoundary>
+                  <Settings />
+                </ErrorBoundary>
+              } />
+              <Route path="storefront" element={
+                <ErrorBoundary>
+                  <StorefrontUnified />
+                </ErrorBoundary>
+              } />
+              <Route path="storefront/:tab" element={
+                <ErrorBoundary>
+                  <StorefrontUnified />
+                </ErrorBoundary>
+              } />
+              <Route path="storefront-management" element={
+                <ErrorBoundary>
+                  <StorefrontManagement />
+                </ErrorBoundary>
+              } />
+              <Route path="storefront-demo" element={
+                <ErrorBoundary>
+                  <StorefrontDemo />
+                </ErrorBoundary>
+              } />
+              <Route path="storefront-settings" element={
+                <ErrorBoundary>
+                  <StorefrontSettings />
+                </ErrorBoundary>
+              } />
+              <Route path="livestream-catalog" element={
+                <LivestreamErrorBoundary>
+                  <LivestreamCatalog />
+                </LivestreamErrorBoundary>
+              } />
+            </Route>
+          </Routes>
+        </AnimatePresence>
+        
+        {/* Choose which tutorial system to use - prefer the new one */}
+        {!location.pathname.includes('onboarding') && (
+          !showTutorial ? (
+            <ErrorBoundary fallback={null}>
+              <TutorialOverlay />
+            </ErrorBoundary>
+          ) : (
+            <ErrorBoundary fallback={null}>
+              <GuidedTutorial isOpen={showTutorial} onClose={() => setShowTutorial(false)} />
+            </ErrorBoundary>
+          )
+        )}
+      </TutorialProvider>
+    </ErrorBoundary>
   );
 }
 
