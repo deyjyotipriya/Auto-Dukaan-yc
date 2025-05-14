@@ -323,7 +323,7 @@ const WhatsAppOnboarding: React.FC = () => {
       </div>
         
       {/* Chat area */}
-      <div className="flex-1 p-4 overflow-y-auto flex flex-col space-y-3 bg-[url('/assets/whatsapp-bg.png')] bg-repeat">
+      <div className="flex-1 p-4 overflow-y-auto flex flex-col space-y-3 bg-[#e5ded8]">
         {messages.map((message, index) => (
           <div 
             key={index}
