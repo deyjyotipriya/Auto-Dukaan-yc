@@ -313,15 +313,26 @@ const StorefrontManagement: React.FC = () => {
                       </Button>
                       
                       {store.isPublished && (
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => handleViewStore(store.liveUrl)}
-                          className="flex items-center"
-                        >
-                          <ExternalLink className="h-3 w-3 mr-1" />
-                          {t('common.view')}
-                        </Button>
+                        <>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => handleViewStore(store.liveUrl)}
+                            className="flex items-center"
+                          >
+                            <ExternalLink className="h-3 w-3 mr-1" />
+                            {t('common.view')}
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => navigate(`/store/${store.id}`)}
+                            className="flex items-center"
+                          >
+                            <ShoppingBag className="h-3 w-3 mr-1" />
+                            View as Buyer
+                          </Button>
+                        </>
                       )}
                     </div>
                     
