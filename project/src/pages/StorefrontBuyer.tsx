@@ -16,9 +16,8 @@ import {
   Mic,
   X
 } from 'lucide-react';
-import { useAppSelector } from '../hooks/redux';
-import { selectAllProducts } from '../store/slices/productsSlice';
-import { selectStorefrontConfig } from '../store/slices/storefrontSlice';
+// Removed useAppSelector import to use static data instead
+// Removed Redux selector imports to use static data instead
 
 // Types for chat functionality
 interface ChatMessage {
@@ -44,8 +43,52 @@ const StorefrontBuyer: React.FC = () => {
   const navigate = useNavigate();
   const { storeId } = useParams<{ storeId: string }>();
   
-  const allProducts = useAppSelector(selectAllProducts);
-  const storefrontConfig = useAppSelector(selectStorefrontConfig);
+  // Use mock data instead of Redux for now to avoid potential issues
+  const [allProducts] = useState<any[]>([
+    {
+      id: '1',
+      name: 'Premium T-shirt',
+      description: 'High quality cotton t-shirt',
+      price: 599,
+      category: 'Clothing',
+      images: ['/placeholder-tshirt.jpg']
+    },
+    {
+      id: '2',
+      name: 'Designer Jeans',
+      description: 'Stylish jeans for all occasions',
+      price: 1299,
+      category: 'Clothing',
+      images: ['/placeholder-jeans.jpg']
+    },
+    {
+      id: '3',
+      name: 'Smartwatch',
+      description: 'Feature-rich smartwatch with health tracking',
+      price: 2999,
+      category: 'Electronics',
+      images: ['/placeholder-watch.jpg']
+    },
+    {
+      id: '4',
+      name: 'Wireless Headphones',
+      description: 'Premium sound quality with noise cancellation',
+      price: 1499,
+      category: 'Electronics',
+      images: ['/placeholder-headphones.jpg']
+    }
+  ]);
+  
+  const [storefrontConfig] = useState<any>({
+    businessName: 'Auto-Dukaan Store',
+    domain: 'store.autodukaan.com',
+    theme: 'modern',
+    colorScheme: 'light',
+    customColors: {
+      primary: '#3b82f6'
+    },
+    socialMedia: []
+  });
 
   // State for selected category and search
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
