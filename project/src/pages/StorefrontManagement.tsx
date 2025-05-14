@@ -326,7 +326,7 @@ const StorefrontManagement: React.FC = () => {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            onClick={() => navigate(`/store/${store.id}`)}
+                            onClick={() => window.open(`/store/${store.id}`, '_blank')}
                             className="flex items-center"
                           >
                             <ShoppingBag className="h-3 w-3 mr-1" />

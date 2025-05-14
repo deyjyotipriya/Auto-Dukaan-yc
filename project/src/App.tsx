@@ -18,7 +18,7 @@ import AddProduct from './pages/AddProduct';
 import EnhancedAddProduct from './pages/EnhancedAddProduct';
 import StorefrontSettings from './pages/StorefrontSettings';
 import StorefrontManagement from './pages/StorefrontManagement';
-import StorefrontBuyer from './pages/StorefrontBuyer';
+import BuyerView from './pages/BuyerView';
 import LivestreamCatalog from './pages/LivestreamCatalog';
 import ResultsManagement from './pages/ResultsManagement';
 import StorefrontDemo from './pages/StorefrontDemo';
@@ -74,7 +74,7 @@ function App() {
           <Route path="/whatsapp-onboarding" element={<WhatsAppOnboarding />} />
           
           {/* Buyer-facing Storefront */}
-          <Route path="/store/:storeId" element={<StorefrontBuyer />} />
+          <Route path="/store/:storeId" element={<BuyerView />} />
           
           {/* Main App Routes */}
           <Route path="/" element={!isOnboarded ? <WhatsAppOnboarding /> : <MainLayout />}>
