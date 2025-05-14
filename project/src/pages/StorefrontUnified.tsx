@@ -52,8 +52,17 @@ import { selectUser } from '../store/slices/userSlice';
 import { 
   selectStorefrontConfig, 
   selectIsStorefrontPublished, 
-  selectStorefrontLiveUrl
+  selectStorefrontLiveUrl,
+  setConfig,
+  updateTheme,
+  updateCustomColors,
+  updateBusinessInfo,
+  updateContactInfo,
+  updateSEO,
+  updateLegalPages,
+  updateSocialMedia
 } from '../store/slices/storefrontSlice';
+import { defaultStorefrontConfig } from '../services/StorefrontService';
 import { Button } from '@/components/ui/button';
 import StorefrontPreview from '@/components/storefront/StorefrontPreview';
 import ThemeCustomizer from '@/components/storefront/ThemeCustomizer';
@@ -517,14 +526,44 @@ const StorefrontUnified: React.FC = () => {
   const [activeTab, setActiveTab] = useState(tab);
   const [isLoading, setIsLoading] = useState(true);
   
+  // Initialize storefront configuration if it doesn't exist
   useEffect(() => {
-    // Simulate loading storefront data
+    // If there's no configuration in Redux store, initialize with default
+    if (!storefrontConfig) {
+      console.log('Initializing default storefront configuration');
+      // Generate a default config with the user's information if available
+      const defaultConfig = {
+        ...defaultStorefrontConfig,
+        id: user?.id || 'demo-store',
+        businessName: user?.businessName || 'Your Store',
+        domain: user?.businessName ? 
+          user.businessName.toLowerCase().replace(/\s+/g, '-') + '.store.autodukaan.com' :
+          'your-store.autodukaan.com',
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      };
+      
+      // Update SEO with business name
+      if (user?.businessName) {
+        defaultConfig.seo = {
+          ...defaultConfig.seo,
+          title: user.businessName,
+          description: `Welcome to ${user.businessName}. Shop our products online.`,
+          keywords: [user.businessName.toLowerCase(), 'shop', 'online store'],
+        };
+      }
+      
+      // Dispatch action to set the configuration in Redux
+      dispatch(setConfig(defaultConfig));
+    }
+    
+    // Simulate loading data
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [dispatch, storefrontConfig, user]);
   
   // Update URL when tab changes without full page reload
   useEffect(() => {
@@ -543,8 +582,8 @@ const StorefrontUnified: React.FC = () => {
     // After publishing, redirect to the live URL or show success message
   };
   
-  // Mock store URL for demo purposes
-  const storeUrl = liveUrl || 'https://your-store.autodukaan.com';
+  // Use real store URL if available, or generate a demo one
+  const storeUrl = liveUrl || (storefrontConfig?.domain ? `https://${storefrontConfig.domain}` : 'https://your-store.autodukaan.com');
   const storeName = storefrontConfig?.businessName || 'Your Store';
   
   if (isLoading) {
@@ -653,20 +692,53 @@ const StorefrontUnified: React.FC = () => {
         <div className="border rounded-lg overflow-hidden">
           <TabsContent value="preview" className="m-0">
             <div className="h-[700px] overflow-hidden">
-              <StorefrontPreview />
+              {storefrontConfig && <StorefrontPreview config={storefrontConfig} activeTab={activeTab} />}
             </div>
           </TabsContent>
           
           <TabsContent value="appearance" className="m-0 p-6">
-            <ThemeCustomizer />
+            {storefrontConfig && (
+              <ThemeCustomizer 
+                currentTheme={storefrontConfig.theme} 
+                currentColorScheme={storefrontConfig.colorScheme}
+                currentFontFamily={storefrontConfig.fontFamily}
+                customColors={storefrontConfig.customColors}
+                onThemeChange={(theme, colorScheme) => {
+                  dispatch(updateTheme({ theme, colorScheme }));
+                }}
+                onCustomColorsChange={(colors) => {
+                  dispatch(updateCustomColors(colors));
+                }}
+                onFontChange={(font) => {
+                  // Would need to add updateFont action to storefrontSlice
+                  console.log('Font change not implemented yet');
+                }}
+              />
+            )}
           </TabsContent>
           
           <TabsContent value="content" className="m-0 p-6">
-            <PageContentEditor />
+            {storefrontConfig && (
+              <PageContentEditor 
+                pages={storefrontConfig.pages} 
+                onUpdate={(updatedPages) => {
+                  // Would need to implement an updatePages action
+                  console.log('Page content update not implemented yet', updatedPages);
+                }} 
+              />
+            )}
           </TabsContent>
           
           <TabsContent value="domains" className="m-0 p-6">
-            <DomainSettings />
+            {storefrontConfig && (
+              <DomainSettings 
+                currentDomain={storefrontConfig.domain}
+                businessName={storefrontConfig.businessName}
+                onUpdate={(updates) => {
+                  dispatch(updateBusinessInfo(updates));
+                }}
+              />
+            )}
           </TabsContent>
           
           <TabsContent value="analytics" className="m-0 p-6">
@@ -694,19 +766,47 @@ const StorefrontUnified: React.FC = () => {
               
               <div className="p-6">
                 <TabsContent value="general" className="mt-0">
-                  <ContactInfoSettings />
+                  {storefrontConfig && (
+                    <ContactInfoSettings 
+                      contactInfo={storefrontConfig.contactInfo}
+                      onUpdate={(updates) => {
+                        dispatch(updateContactInfo(updates));
+                      }}
+                    />
+                  )}
                 </TabsContent>
                 
                 <TabsContent value="seo" className="mt-0">
-                  <SEOSettings />
+                  {storefrontConfig && (
+                    <SEOSettings 
+                      seoSettings={storefrontConfig.seo}
+                      onUpdate={(updates) => {
+                        dispatch(updateSEO(updates));
+                      }}
+                    />
+                  )}
                 </TabsContent>
                 
                 <TabsContent value="legal" className="mt-0">
-                  <LegalPagesSettings />
+                  {storefrontConfig && (
+                    <LegalPagesSettings 
+                      legalPages={storefrontConfig.legalPages}
+                      onUpdate={(updates) => {
+                        dispatch(updateLegalPages(updates));
+                      }}
+                    />
+                  )}
                 </TabsContent>
                 
                 <TabsContent value="social" className="mt-0">
-                  <SocialMediaSettings />
+                  {storefrontConfig && (
+                    <SocialMediaSettings 
+                      socialMedia={storefrontConfig.socialMedia}
+                      onUpdate={(updates) => {
+                        dispatch(updateSocialMedia(updates));
+                      }}
+                    />
+                  )}
                 </TabsContent>
               </div>
             </Tabs>
