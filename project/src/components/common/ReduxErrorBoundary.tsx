@@ -44,6 +44,13 @@ const ReduxErrorBoundary: React.FC<{
       return fallbackComponent;
     }
 
+    // Extract constructor name if present
+    let constructorName = '';
+    const constructorMatch = error.message.match(/Class constructor (\w+) cannot be invoked/i);
+    if (constructorMatch && constructorMatch[1]) {
+      constructorName = constructorMatch[1];
+    }
+    
     // Detect if this is a Redux constructor error
     const isReduxConstructorError = error.message.includes('cannot be invoked without \'new\'') ||
                                    error.message.includes('Class constructor');
@@ -83,7 +90,7 @@ const ReduxErrorBoundary: React.FC<{
         {isReduxConstructorError && (
           <div className="error-note">
             <small>
-              Note: This error is related to Redux initialization issues. 
+              Note: This error is related to Redux initialization issues{constructorName ? ` with the "${constructorName}" constructor` : ''}. 
               Refreshing the page may resolve it.
             </small>
           </div>

@@ -12,7 +12,7 @@
   var originalOnError = window.onerror;
   
   // Minified constructor names known to cause issues
-  var problematicConstructors = ['UC', 'XC', 'SC', 'Fo', 'al', 'wc', 'vc'];
+  var problematicConstructors = ['UC', 'XC', 'SC', 'Fo', 'al', 'wc', 'vc', 'tA'];
   
   // Track patched constructors to avoid double-patching
   var patchedConstructors = {};

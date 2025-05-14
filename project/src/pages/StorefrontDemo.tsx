@@ -13,7 +13,8 @@ import {
   Star,
   Filter,
   ArrowLeft,
-  ArrowRight
+  ArrowRight,
+  User
 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
@@ -817,4 +818,16 @@ const StorefrontDemo: React.FC = () => {
   );
 };
 
-export default StorefrontDemo;
+// Wrap the component with error boundary for Redux errors
+import { ReduxErrorBoundary } from '../components/common';
+
+// Wrapped version with error handling
+const StorefrontDemoWithErrorHandling: React.FC = () => {
+  return (
+    <ReduxErrorBoundary>
+      <StorefrontDemo />
+    </ReduxErrorBoundary>
+  );
+};
+
+export default StorefrontDemoWithErrorHandling;

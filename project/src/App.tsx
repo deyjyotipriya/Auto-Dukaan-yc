@@ -206,9 +206,9 @@ function App() {
                 </ErrorBoundary>
               } />
               <Route path="storefront-demo" element={
-                <ErrorBoundary>
+                <ReduxErrorBoundary>
                   <StorefrontDemo />
-                </ErrorBoundary>
+                </ReduxErrorBoundary>
               } />
               <Route path="storefront-settings" element={
                 <ErrorBoundary>
