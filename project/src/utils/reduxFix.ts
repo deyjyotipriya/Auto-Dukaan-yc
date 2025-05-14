@@ -162,6 +162,121 @@ export const useDispatch = function(): AppDispatch {
 // Export a typed version as well
 export const useAppDispatch = () => useDispatch();
 
+// Store original function methods
+const originalApply = Function.prototype.apply;
+const originalCall = Function.prototype.call;
+
+// Cache for already processed functions to prevent recursion
+const processedApply = new WeakMap<Function, boolean>();
+const processedCall = new WeakMap<Function, boolean>();
+
+// Helper function to create a new instance with any constructor
+function createInstance(Constructor: Function, args: any[]) {
+  // First, try the simplest method
+  try {
+    return new Constructor(...args);
+  } catch (error) {
+    console.log('Simple new failed, trying alternative instantiation');
+    
+    // If that fails, try Function.prototype.bind approach (more robust for some cases)
+    try {
+      // @ts-ignore - This is a hack to make the constructor work
+      const BoundConstructor = Constructor.bind.apply(Constructor, [null, ...args]);
+      return new BoundConstructor();
+    } catch (bindError) {
+      console.warn('Failed to create instance with bind:', bindError);
+      
+      // Last resort, try Object.create
+      try {
+        const instance = Object.create(Constructor.prototype);
+        Constructor.apply(instance, args);
+        return instance;
+      } catch (createError) {
+        console.warn('Failed to create instance with Object.create:', createError);
+        throw error; // Throw the original error if all approaches fail
+      }
+    }
+  }
+}
+
+// Helper to determine if this is likely a React or Redux class
+function isReactOrReduxClass(fn: Function) {
+  if (!fn.name) return false;
+  
+  const name = fn.name;
+  
+  return (
+    name.includes('Component') || 
+    name.includes('Redux') || 
+    name.includes('Provider') ||
+    // Known minified constructor names
+    name === 'XC' || 
+    name === 'X' ||
+    name === 'Y' ||
+    name === 'Z' ||
+    // Any single letter or two-letter uppercase class names
+    /^[A-Z]{1,2}$/.test(name)
+  );
+}
+
+// Safer implementation to patch Function.prototype.apply
+function patchedApply(this: Function, thisArg: any, args: any[]) {
+  // If we're already processing this function, use the original to prevent recursion
+  if (processedApply.has(this)) {
+    return originalApply.call(this, thisArg, args);
+  }
+  
+  processedApply.set(this, true);
+  
+  try {
+    return originalApply.call(this, thisArg, args);
+  } catch (error) {
+    // If it's a constructor error and likely a React/Redux component
+    if (error instanceof TypeError && 
+        (error.message.includes('cannot be invoked without \'new\'') || 
+         error.message.includes('Class constructor'))) {
+      
+      if (isReactOrReduxClass(this)) {
+        console.warn(`Redux fix: Caught constructor error for ${this.name}. Attempting to fix.`);
+        return createInstance(this, args || []);
+      }
+    }
+    
+    throw error;
+  } finally {
+    processedApply.delete(this);
+  }
+}
+
+// Safer implementation to patch Function.prototype.call
+function patchedCall(this: Function, thisArg: any, ...args: any[]) {
+  // If we're already processing this function, use the original to prevent recursion
+  if (processedCall.has(this)) {
+    return originalCall.apply(this, [thisArg, ...args]);
+  }
+  
+  processedCall.set(this, true);
+  
+  try {
+    return originalCall.apply(this, [thisArg, ...args]);
+  } catch (error) {
+    // If it's a constructor error and likely a React/Redux component
+    if (error instanceof TypeError && 
+        (error.message.includes('cannot be invoked without \'new\'') || 
+         error.message.includes('Class constructor'))) {
+      
+      if (isReactOrReduxClass(this)) {
+        console.warn(`Redux fix: Caught constructor error for ${this.name}. Attempting to fix.`);
+        return createInstance(this, args);
+      }
+    }
+    
+    throw error;
+  } finally {
+    processedCall.delete(this);
+  }
+}
+
 /**
  * Apply this fix globally
  * Call this function in your index.js/main.js before rendering your app
@@ -172,166 +287,16 @@ export function applyReduxFixes(): void {
     console.log('Redux fixes already applied, skipping');
     return;
   }
-
+  
   try {
     console.log('Applying Redux fixes...');
     
     // Define React in global scope for version checking if needed
     const win = window as any;
     
-    // Add special handler for XC constructor error (and other similar errors)
-    // We need to patch the global Function prototype's apply method to catch constructor errors
-    const originalFunctionApply = Function.prototype.apply;
-    
-    // Flag to prevent infinite recursion
-    let isApplyHandlerActive = false;
-    
-    // Add a global handler for constructor errors
-    Function.prototype.apply = function(thisArg, args) {
-      // Prevent infinite recursion
-      if (isApplyHandlerActive) {
-        // Use the original apply directly when already handling an apply call
-        return originalFunctionApply.call(this, thisArg, args);
-      }
-      
-      try {
-        // Set recursion guard
-        isApplyHandlerActive = true;
-        
-        // Try the original apply
-        const result = originalFunctionApply.call(this, thisArg, args);
-        
-        // Reset recursion guard
-        isApplyHandlerActive = false;
-        
-        return result;
-      } catch (error) {
-        // Reset recursion guard before handling the error
-        isApplyHandlerActive = false;
-        
-        // If it's a class constructor error, handle it
-        if (error instanceof TypeError && 
-            (error.message.includes('cannot be invoked without \'new\'') || 
-             error.message.includes('Class constructor'))) {
-          
-          console.warn(`Redux fix caught constructor error: ${error.message}`);
-          
-          // Try to determine if this is a React or Redux component
-          const isLikelyReactOrRedux = this.name && 
-            (this.name.includes('Component') || 
-             this.name.includes('Redux') || 
-             this.name.includes('Provider') ||
-             this.name === 'XC' ||
-             // Common minified class names in Redux toolkit
-             this.name === 'X' ||
-             this.name === 'Y' ||
-             this.name === 'Z' ||
-             // Add more single-character class names that might be from minified Redux code
-             /^[A-Z]{1,2}$/.test(this.name));
-             
-          if (isLikelyReactOrRedux) {
-            console.log(`Attempting to fix constructor call for: ${this.name || 'unknown constructor'}`);
-            
-            // Special handling for XC which seems particularly problematic
-            if (this.name === 'XC') {
-              console.log('Special handling for XC constructor');
-              try {
-                // Don't use this.apply to prevent recursion - use new directly
-                return new this(...args);
-              } catch (objectCreateError) {
-                console.warn(`Failed to fix XC with new: ${objectCreateError.message}`);
-              }
-            }
-            
-            // Try instantiating with new
-            try {
-              return new this(...args);
-            } catch (newError) {
-              console.warn(`Failed to fix with new keyword: ${newError.message}`);
-            }
-          }
-        }
-        
-        // Re-throw if we couldn't handle it
-        throw error;
-      }
-    };
-    
-    // Store the original call method too for consistency
-    const originalFunctionCall = Function.prototype.call;
-    
-    // Flag to prevent infinite recursion in call handler
-    let isCallHandlerActive = false;
-    
-    Function.prototype.call = function(thisArg, ...args) {
-      // Prevent infinite recursion
-      if (isCallHandlerActive) {
-        // Use the original call directly when already handling a call
-        return originalFunctionCall.apply(this, [thisArg, ...args]);
-      }
-      
-      try {
-        // Set recursion guard
-        isCallHandlerActive = true;
-        
-        // Try the original call
-        const result = originalFunctionCall.apply(this, [thisArg, ...args]);
-        
-        // Reset recursion guard
-        isCallHandlerActive = false;
-        
-        return result;
-      } catch (error) {
-        // Reset recursion guard before handling the error
-        isCallHandlerActive = false;
-        
-        // If it's a class constructor error, handle it
-        if (error instanceof TypeError && 
-            (error.message.includes('cannot be invoked without \'new\'') || 
-             error.message.includes('Class constructor'))) {
-          
-          console.warn(`Redux fix caught constructor error: ${error.message}`);
-          
-          // Try to determine if this is a React or Redux component
-          const isLikelyReactOrRedux = this.name && 
-            (this.name.includes('Component') || 
-             this.name.includes('Redux') || 
-             this.name.includes('Provider') ||
-             this.name === 'XC' ||
-             // Common minified class names in Redux toolkit
-             this.name === 'X' ||
-             this.name === 'Y' ||
-             this.name === 'Z' ||
-             // Add more single-character class names that might be from minified Redux code
-             /^[A-Z]{1,2}$/.test(this.name));
-             
-          if (isLikelyReactOrRedux) {
-            console.log(`Attempting to fix constructor call for: ${this.name || 'unknown constructor'}`);
-            
-            // Special handling for XC which seems particularly problematic
-            if (this.name === 'XC') {
-              console.log('Special handling for XC constructor');
-              try {
-                // Don't use prototype methods that could cause recursion
-                return new this(...args);
-              } catch (newError) {
-                console.warn(`Failed to fix XC with new: ${newError.message}`);
-              }
-            }
-            
-            // Try instantiating with new
-            try {
-              return new this(...args);
-            } catch (newError) {
-              console.warn(`Failed to fix with new keyword: ${newError.message}`);
-            }
-          }
-        }
-        
-        // Re-throw if we couldn't handle it
-        throw error;
-      }
-    };
+    // Apply the patches using a safer approach
+    Function.prototype.apply = patchedApply;
+    Function.prototype.call = patchedCall;
     
     // Try to detect store directly from Redux DevTools
     if (win && win.__REDUX_DEVTOOLS_EXTENSION__ && win.__REDUX_DEVTOOLS_EXTENSION__.store) {
@@ -382,7 +347,7 @@ export function applyReduxFixes(): void {
     
     // Add global diagnostic info for debugging
     win.__REDUX_FIXED__ = true;
-    win.__REDUX_FIX_VERSION__ = '1.3.0';
+    win.__REDUX_FIX_VERSION__ = '1.4.0';
     win.__REDUX_FIX_TIMESTAMP__ = new Date().toISOString();
     
     console.log('Redux fixes applied successfully');
