@@ -131,7 +131,7 @@ const StorefrontBuyer: React.FC = () => {
     }
     
     if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
-      return 'Our prices are very competitive. Is there a specific product you're interested in?';
+      return 'Our prices are very competitive. Is there a specific product you are interested in?';
     }
     
     if (lowerMessage.includes('delivery') || lowerMessage.includes('shipping')) {
