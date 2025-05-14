@@ -45,7 +45,7 @@ const MainLayout: React.FC = () => {
     { name: 'Orders', href: '/orders', icon: ShoppingCart },
     { name: 'Chat', href: '/chat', icon: MessageCircle, badge: unreadMessageCount > 0 ? unreadMessageCount : undefined },
     { name: 'Livestream Catalog', href: '/livestream-catalog', icon: BarChart3 },
-    { name: 'Storefront', href: '/storefront-management', icon: LinkIcon },
+    { name: 'Storefront', href: '/storefront', icon: LinkIcon },
     { name: 'Storefront Demo', href: '/storefront-demo', icon: LinkIcon },
     { name: 'Results', href: '/results', icon: Database },
     { name: 'Compliance', href: '/compliance', icon: FileText },

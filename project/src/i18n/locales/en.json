@@ -165,6 +165,52 @@
     "success": "Success",
     "error": "Error",
     "warning": "Warning",
-    "info": "Info"
+    "info": "Info",
+    "done": "Done"
+  },
+  "storefront": {
+    "viewStore": "View Store",
+    "publish": "Publish Store",
+    "preview": "Preview Store",
+    "tabs": {
+      "preview": "Preview",
+      "appearance": "Appearance",
+      "content": "Content",
+      "domains": "Domains",
+      "analytics": "Analytics",
+      "settings": "Settings"
+    },
+    "settings": {
+      "general": "General",
+      "seo": "SEO",
+      "legal": "Legal Pages",
+      "social": "Social Media"
+    },
+    "status": {
+      "published": "Published",
+      "draft": "Draft"
+    },
+    "share": {
+      "share": "Share Store",
+      "title": "Share Your Store",
+      "description": "Share your store with customers via different methods.",
+      "link": "Link",
+      "qrCode": "QR Code",
+      "message": "Message",
+      "social": "Social",
+      "storeLink": "Store Link",
+      "linkHelp": "Copy this link to share your store directly with customers.",
+      "openStore": "Open Store",
+      "qrCodeHelp": "Use this QR code for physical marketing materials or in-store displays.",
+      "download": "Download",
+      "print": "Print",
+      "messageTemplate": "Message Template",
+      "chooseTemplate": "Choose a template",
+      "copied": "Copied!",
+      "copyMessage": "Copy Message",
+      "sendWhatsApp": "Send on WhatsApp",
+      "socialHelp": "Share your store directly on social media platforms.",
+      "powered": "Powered by Auto-Dukaan"
+    }
   }
 }

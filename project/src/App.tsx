@@ -18,6 +18,7 @@ import AddProduct from './pages/AddProduct';
 import EnhancedAddProduct from './pages/EnhancedAddProduct';
 import StorefrontSettings from './pages/StorefrontSettings';
 import StorefrontManagement from './pages/StorefrontManagement';
+import StorefrontUnified from './pages/StorefrontUnified';
 // Using the fixed BuyerView component
 import BuyerView from './pages/BuyerView';
 import LivestreamCatalog from './pages/LivestreamCatalog';
@@ -109,9 +110,11 @@ function App() {
             <Route path="compliance" element={<Compliance />} />
             <Route path="supply-chain" element={<SupplyChain />} />
             <Route path="settings" element={<Settings />} />
-            <Route path="storefront" element={<StorefrontSettings />} />
+            <Route path="storefront" element={<StorefrontUnified />} />
+            <Route path="storefront/:tab" element={<StorefrontUnified />} />
             <Route path="storefront-management" element={<StorefrontManagement />} />
             <Route path="storefront-demo" element={<StorefrontDemo />} />
+            <Route path="storefront-settings" element={<StorefrontSettings />} />
             <Route path="livestream-catalog" element={<LivestreamCatalog />} />
           </Route>
         </Routes>
