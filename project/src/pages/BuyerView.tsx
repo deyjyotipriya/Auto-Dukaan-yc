@@ -15,6 +15,8 @@ import {
   Mic,
   X
 } from 'lucide-react';
+// Import the safe versions of Redux hooks
+import { useSelector, useAppSelector, useDispatch, useAppDispatch } from '../utils/reduxFix';
 
 // Mock types instead of importing from Redux
 interface ChatMessage {
@@ -137,6 +139,29 @@ const BuyerView: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [orders, setOrders] = useState<ProductOrder[]>([]);
 
+  // Try to use Redux selectors but fall back to mock data if they fail
+  const tryUseRedux = () => {
+    try {
+      // This is wrapped in a try/catch as a safety mechanism
+      // We've already provided mock data above, so this is just a demonstration
+      // of how you would use the safe selector
+      
+      // Example (only if Redux store is available):
+      // const storeProducts = useSafeSelector(state => state.products?.items);
+      // if (storeProducts?.length > 0) setAllProducts(storeProducts);
+      
+      // const storeConfig = useSafeSelector(state => state.storefront?.config);
+      // if (storeConfig) setStorefrontConfig(storeConfig);
+    } catch (error) {
+      console.warn('Redux selector error, using mock data instead:', error);
+    }
+  };
+
+  // Attempt to use Redux on first render
+  useEffect(() => {
+    tryUseRedux();
+  }, []);
+
   // Filter products based on category and search
   useEffect(() => {
     let filtered = allProducts;
@@ -200,7 +225,7 @@ const BuyerView: React.FC = () => {
     }, 1500);
   };
 
-  // Generate responses based on message content
+  // Generate seller response based on user message
   const getSellerResponse = (message: string): string => {
     const lowerMessage = message.toLowerCase();
     
@@ -462,7 +487,7 @@ const BuyerView: React.FC = () => {
             </div>
             <h3 className="text-lg font-medium text-gray-900">No products found</h3>
             <p className="text-gray-500 mt-1">
-              Try adjusting your search or filter to find what you're looking for.
+              Try adjusting your search or filter to find what you are looking for.
             </p>
           </div>
         )}

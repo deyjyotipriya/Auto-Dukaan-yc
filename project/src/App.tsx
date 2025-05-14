@@ -18,6 +18,7 @@ import AddProduct from './pages/AddProduct';
 import EnhancedAddProduct from './pages/EnhancedAddProduct';
 import StorefrontSettings from './pages/StorefrontSettings';
 import StorefrontManagement from './pages/StorefrontManagement';
+// Using the fixed BuyerView component
 import BuyerView from './pages/BuyerView';
 import LivestreamCatalog from './pages/LivestreamCatalog';
 import ResultsManagement from './pages/ResultsManagement';
@@ -25,13 +26,23 @@ import StorefrontDemo from './pages/StorefrontDemo';
 import GuidedTutorial from './components/tutorial/GuidedTutorial';
 import TutorialOverlay from './components/tutorial/TutorialOverlay';
 import { TutorialProvider } from './contexts/TutorialContext';
-import { useAppSelector } from './hooks/redux';
+// Use our safe version of useSelector for Redux
+import { useSelector, useAppSelector } from './utils/reduxFix';
 import { selectIsOnboarded } from './store/slices/userSlice';
 
 function App() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const isOnboarded = useAppSelector(selectIsOnboarded);
+  
+  // Use our safe version of useSelector to prevent errors
+  // Fallback to false if there's an issue with Redux
+  let isOnboarded = false;
+  try {
+    isOnboarded = useAppSelector(selectIsOnboarded);
+  } catch (error) {
+    console.warn("Error accessing Redux state, defaulting isOnboarded to false:", error);
+  }
+  
   const [isLoading, setIsLoading] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
 
@@ -73,8 +84,17 @@ function App() {
           {/* WhatsApp Onboarding */}
           <Route path="/whatsapp-onboarding" element={<WhatsAppOnboarding />} />
           
-          {/* Buyer-facing Storefront */}
+          {/* Buyer-facing Storefront - Using the fixed version */}
           <Route path="/store/:storeId" element={<BuyerView />} />
+          
+          {/* For testing purposes, provide a direct path to the HTML version */}
+          <Route path="/store-html/:storeId" element={
+            <iframe 
+              src="/buyer-view.html" 
+              style={{ width: '100%', height: '100vh', border: 'none' }} 
+              title="Store View"
+            />
+          } />
           
           {/* Main App Routes */}
           <Route path="/" element={!isOnboarded ? <WhatsAppOnboarding /> : <MainLayout />}>

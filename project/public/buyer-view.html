@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto-Dukaan Store</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .chat-bubble-user {
+      background-color: #3b82f6;
+      color: white;
+      border-radius: 1rem;
+      border-bottom-right-radius: 0;
+      padding: 0.75rem;
+      max-width: 80%;
+      margin-left: auto;
+      margin-bottom: 0.75rem;
+    }
+    
+    .chat-bubble-seller {
+      background-color: white;
+      color: #1f2937;
+      border-radius: 1rem;
+      border-bottom-left-radius: 0;
+      padding: 0.75rem;
+      max-width: 80%;
+      margin-right: auto;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .category-button {
+      padding: 0.375rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    
+    .category-button.active {
+      background-color: #3b82f6;
+      color: white;
+    }
+    
+    .category-button:not(.active) {
+      background-color: white;
+      border: 1px solid #d1d5db;
+      color: #374151;
+    }
+    
+    .product-card {
+      background-color: white;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 0.2s;
+    }
+    
+    .product-card:hover {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="bg-white border-b">
+    <div class="container mx-auto px-4 py-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <button class="mr-3 lg:hidden" onclick="goBack()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" 
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5m7 7-7-7 7-7"></path>
+            </svg>
+          </button>
+          <h1 class="text-xl font-semibold text-blue-600">Auto-Dukaan Store</h1>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <button class="relative" onclick="toggleChat()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" 
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+            <span id="chat-badge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">1</span>
+          </button>
+          <button class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" 
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+            <span id="order-badge" class="hidden absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">1</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Search bar -->
+      <div class="mt-3 flex items-center">
+        <div class="relative flex-1">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" 
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+              class="text-gray-400">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Search products..."
+            class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            oninput="searchProducts(this.value)"
+          />
+        </div>
+        <button class="ml-2 p-2 bg-gray-100 rounded-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main content -->
+  <main class="flex-grow container mx-auto px-4 py-6">
+    <!-- Categories -->
+    <div class="mb-6 overflow-x-auto">
+      <div class="flex space-x-2 pb-2" id="categories">
+        <button 
+          class="category-button active"
+          data-category="all"
+          onclick="filterByCategory('all')"
+        >
+          All Products
+        </button>
+        
+        <button 
+          class="category-button"
+          data-category="Clothing"
+          onclick="filterByCategory('Clothing')"
+        >
+          Clothing
+        </button>
+        
+        <button 
+          class="category-button"
+          data-category="Electronics"
+          onclick="filterByCategory('Electronics')"
+        >
+          Electronics
+        </button>
+        
+        <button 
+          class="category-button"
+          data-category="Footwear"
+          onclick="filterByCategory('Footwear')"
+        >
+          Footwear
+        </button>
+        
+        <button 
+          class="category-button"
+          data-category="Accessories"
+          onclick="filterByCategory('Accessories')"
+        >
+          Accessories
+        </button>
+      </div>
+    </div>
+    
+    <!-- Featured banner -->
+    <div id="featured-banner" class="mb-6 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+      <h2 class="text-xl font-semibold mb-2">
+        Welcome to Auto-Dukaan Store
+      </h2>
+      <p class="mb-4 text-blue-100">
+        Discover our amazing products and get in touch with us directly through chat.
+      </p>
+      <button 
+        class="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium"
+        onclick="toggleChat()"
+      >
+        Chat with us
+      </button>
+    </div>
+    
+    <!-- Products grid -->
+    <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <!-- Products will be populated here by JavaScript -->
+    </div>
+    
+    <!-- No products message -->
+    <div id="no-products" class="hidden text-center py-12">
+      <div class="w-16 h-16 mx-auto bg-gray-200 rounded-full flex items-center justify-center mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="text-gray-400">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900">No products found</h3>
+      <p class="text-gray-500 mt-1">
+        Try adjusting your search or filter to find what you're looking for.
+      </p>
+    </div>
+  </main>
+  
+  <!-- Chat window -->
+  <div id="chat-window" class="hidden fixed inset-0 z-50 flex flex-col bg-white md:inset-auto md:right-4 md:bottom-4 md:top-auto md:left-auto md:w-96 md:h-[500px] md:rounded-lg md:shadow-xl">
+    <div class="flex items-center justify-between bg-blue-600 text-white p-3 md:rounded-t-lg">
+      <div class="flex items-center">
+        <div class="w-8 h-8 rounded-full bg-blue-700 flex items-center justify-center mr-2">
+          A
+        </div>
+        <div>
+          <h3 class="font-medium">Auto-Dukaan Store</h3>
+          <p class="text-xs opacity-80">Usually replies within minutes</p>
+        </div>
+      </div>
+      <button 
+        class="p-1"
+        onclick="toggleChat()"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" 
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <div id="chat-messages" class="flex-1 overflow-y-auto p-3 bg-gray-50">
+      <!-- Messages will be populated here by JavaScript -->
+    </div>
+    
+    <!-- Product selection (optional) -->
+    <div id="selected-product" class="hidden p-2 border-t border-gray-200 bg-gray-50">
+      <!-- Selected product info will be populated here -->
+    </div>
+    
+    <!-- Chat input -->
+    <div class="p-3 border-t border-gray-200 bg-white md:rounded-b-lg">
+      <div class="flex items-center">
+        <div class="flex space-x-2">
+          <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" 
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+          <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" 
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+              <line x1="12" y1="19" x2="12" y2="23"></line>
+              <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="flex-1 mx-2">
+          <textarea
+            id="message-input"
+            placeholder="Type a message..."
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            rows="1"
+            onkeypress="handleKeyPress(event)"
+          ></textarea>
+        </div>
+        <button 
+          id="send-button"
+          class="p-2 bg-blue-500 text-white rounded-full disabled:opacity-50"
+          onclick="sendMessage()"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bottom navigation -->
+  <nav class="bg-white border-t sticky bottom-0 py-2">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-around">
+        <button class="flex flex-col items-center p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="text-blue-500">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span class="text-xs mt-1">Home</span>
+        </button>
+        <button class="flex flex-col items-center p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="text-gray-500">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span class="text-xs mt-1">Search</span>
+        </button>
+        <button class="flex flex-col items-center p-2" onclick="toggleChat()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="text-gray-500">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+          </svg>
+          <span class="text-xs mt-1">Chat</span>
+        </button>
+        <button class="flex flex-col items-center p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="text-gray-500">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="text-xs mt-1">Orders</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <script>
+    // Mock data
+    const products = [
+      {
+        id: '1',
+        name: 'Premium T-shirt',
+        description: 'High quality cotton t-shirt',
+        price: 599,
+        category: 'Clothing',
+        image: 'https://via.placeholder.com/300?text=T-shirt'
+      },
+      {
+        id: '2',
+        name: 'Designer Jeans',
+        description: 'Stylish jeans for all occasions',
+        price: 1299,
+        category: 'Clothing',
+        image: 'https://via.placeholder.com/300?text=Jeans'
+      },
+      {
+        id: '3',
+        name: 'Smartwatch',
+        description: 'Feature-rich smartwatch with health tracking',
+        price: 2999,
+        category: 'Electronics',
+        image: 'https://via.placeholder.com/300?text=Smartwatch'
+      },
+      {
+        id: '4',
+        name: 'Wireless Headphones',
+        description: 'Premium sound quality with noise cancellation',
+        price: 1499,
+        category: 'Electronics',
+        image: 'https://via.placeholder.com/300?text=Headphones'
+      },
+      {
+        id: '5',
+        name: 'Casual Shoes',
+        description: 'Comfortable everyday shoes',
+        price: 899,
+        category: 'Footwear',
+        image: 'https://via.placeholder.com/300?text=Shoes'
+      },
+      {
+        id: '6',
+        name: 'Backpack',
+        description: 'Durable backpack with laptop compartment',
+        price: 1199,
+        category: 'Accessories',
+        image: 'https://via.placeholder.com/300?text=Backpack'
+      }
+    ];
+
+    // Chat messages
+    let messages = [
+      {
+        id: '1',
+        text: 'Welcome to Auto-Dukaan Store! How can I help you today?',
+        sender: 'seller',
+        timestamp: new Date(),
+        isRead: true
+      }
+    ];
+
+    // Orders
+    let orders = [];
+
+    // Selected product
+    let selectedProduct = null;
+
+    // Current filter
+    let currentCategory = 'all';
+    let currentSearchQuery = '';
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      renderProducts();
+      renderMessages();
+    });
+
+    // Filter products by category
+    function filterByCategory(category) {
+      currentCategory = category;
+      
+      // Update active class on category buttons
+      document.querySelectorAll('.category-button').forEach(button => {
+        if (button.dataset.category === category) {
+          button.classList.add('active');
+        } else {
+          button.classList.remove('active');
+        }
+      });
+      
+      // Hide banner if not on 'all' category
+      if (category === 'all' && currentSearchQuery === '') {
+        document.getElementById('featured-banner').classList.remove('hidden');
+      } else {
+        document.getElementById('featured-banner').classList.add('hidden');
+      }
+      
+      renderProducts();
+    }
+
+    // Search products
+    function searchProducts(query) {
+      currentSearchQuery = query.toLowerCase();
+      
+      // Hide banner if search query is not empty
+      if (currentSearchQuery === '' && currentCategory === 'all') {
+        document.getElementById('featured-banner').classList.remove('hidden');
+      } else {
+        document.getElementById('featured-banner').classList.add('hidden');
+      }
+      
+      renderProducts();
+    }
+
+    // Render products based on current filters
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = '';
+      
+      let filteredProducts = products;
+      
+      // Apply category filter
+      if (currentCategory !== 'all') {
+        filteredProducts = filteredProducts.filter(p => p.category === currentCategory);
+      }
+      
+      // Apply search filter
+      if (currentSearchQuery) {
+        filteredProducts = filteredProducts.filter(p => 
+          p.name.toLowerCase().includes(currentSearchQuery) || 
+          p.description.toLowerCase().includes(currentSearchQuery)
+        );
+      }
+      
+      // Show/hide no products message
+      if (filteredProducts.length === 0) {
+        document.getElementById('no-products').classList.remove('hidden');
+        grid.classList.add('hidden');
+      } else {
+        document.getElementById('no-products').classList.add('hidden');
+        grid.classList.remove('hidden');
+        
+        // Render each product
+        filteredProducts.forEach(product => {
+          const productCard = document.createElement('div');
+          productCard.className = 'product-card';
+          productCard.innerHTML = `
+            <div class="relative aspect-square bg-gray-100">
+              <img 
+                src="${product.image}" 
+                alt="${product.name}" 
+                class="w-full h-full object-cover"
+              />
+              <button class="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" 
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                  class="text-gray-400">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="p-3">
+              <h3 class="font-medium text-gray-900 truncate">${product.name}</h3>
+              <p class="text-sm text-gray-500 truncate">${product.description}</p>
+              <div class="mt-2 flex justify-between items-center">
+                <span class="font-semibold">₹${product.price}</span>
+                <div class="flex space-x-1">
+                  <button 
+                    class="p-1.5 bg-gray-100 rounded-full"
+                    onclick="handleProductInquiry('${product.id}')"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" 
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      class="text-blue-500">
+                      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                  </button>
+                  <button 
+                    class="p-1.5 bg-blue-100 rounded-full"
+                    onclick="handleOrderProduct('${product.id}')"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" 
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      class="text-blue-600">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                      <line x1="3" y1="6" x2="21" y2="6"></line>
+                      <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          
+          grid.appendChild(productCard);
+        });
+      }
+    }
+
+    // Toggle chat window visibility
+    function toggleChat() {
+      const chatWindow = document.getElementById('chat-window');
+      chatWindow.classList.toggle('hidden');
+      
+      // Mark messages as read when chat is opened
+      if (!chatWindow.classList.contains('hidden')) {
+        messages = messages.map(msg => ({
+          ...msg,
+          isRead: true
+        }));
+        
+        // Hide notification badge
+        document.getElementById('chat-badge').classList.add('hidden');
+        
+        // Focus on input
+        document.getElementById('message-input').focus();
+      }
+    }
+
+    // Send a message in the chat
+    function sendMessage() {
+      const input = document.getElementById('message-input');
+      const text = input.value.trim();
+      
+      if (!text) return;
+      
+      // Add user message
+      const userMessage = {
+        id: Date.now().toString(),
+        text: text,
+        sender: 'user',
+        timestamp: new Date(),
+        isRead: true
+      };
+      
+      messages.push(userMessage);
+      input.value = '';
+      
+      renderMessages();
+      
+      // Simulate seller response
+      setTimeout(() => {
+        const sellerMessage = {
+          id: (Date.now() + 1).toString(),
+          text: getSellerResponse(text),
+          sender: 'seller',
+          timestamp: new Date(),
+          isRead: document.getElementById('chat-window').classList.contains('hidden') ? false : true
+        };
+        
+        messages.push(sellerMessage);
+        renderMessages();
+        
+        // Show notification badge if chat is closed
+        if (document.getElementById('chat-window').classList.contains('hidden')) {
+          document.getElementById('chat-badge').classList.remove('hidden');
+          document.getElementById('chat-badge').textContent = 
+            messages.filter(m => m.sender === 'seller' && !m.isRead).length;
+        }
+      }, 1000);
+    }
+
+    // Generate seller response based on user message
+    function getSellerResponse(message) {
+      const lowerMessage = message.toLowerCase();
+      
+      if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+        return 'Hello! Thanks for contacting Auto-Dukaan Store. How may I assist you today?';
+      }
+      
+      if (lowerMessage.includes('price') || lowerMessage.includes('cost')) {
+        return 'Our prices are very competitive. Is there a specific product you are interested in?';
+      }
+      
+      if (lowerMessage.includes('delivery') || lowerMessage.includes('shipping')) {
+        return 'We provide delivery within 3-5 business days. Shipping is free for orders above ₹499.';
+      }
+      
+      if (lowerMessage.includes('payment') || lowerMessage.includes('pay')) {
+        return 'We accept all major payment methods including UPI, credit/debit cards, and cash on delivery.';
+      }
+      
+      if (lowerMessage.includes('discount') || lowerMessage.includes('offer')) {
+        return 'We currently have a 10% discount on all products. Use code WELCOME10 at checkout.';
+      }
+      
+      return 'Thank you for your message. How else can I help you with your shopping today?';
+    }
+
+    // Handle pressing Enter key in chat input
+    function handleKeyPress(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    }
+
+    // Handle product inquiry
+    function handleProductInquiry(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      
+      selectedProduct = product;
+      renderSelectedProduct();
+      
+      // Add inquiry message
+      const inquiryMessage = {
+        id: Date.now().toString(),
+        text: `I'm interested in this product: ${product.name}`,
+        sender: 'user',
+        timestamp: new Date(),
+        isRead: true,
+        productId: product.id
+      };
+      
+      messages.push(inquiryMessage);
+      
+      // Add seller response
+      const responseMessage = {
+        id: (Date.now() + 1).toString(),
+        text: `Great choice! ${product.name} is available for ₹${product.price}. Would you like to place an order or have any questions about it?`,
+        sender: 'seller',
+        timestamp: new Date(Date.now() + 1000),
+        isRead: true
+      };
+      
+      messages.push(responseMessage);
+      
+      // Show chat window
+      document.getElementById('chat-window').classList.remove('hidden');
+      renderMessages();
+    }
+
+    // Handle ordering a product
+    function handleOrderProduct(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      
+      selectedProduct = product;
+      renderSelectedProduct();
+      
+      // Add order message
+      const orderMessage = {
+        id: Date.now().toString(),
+        text: `I would like to order ${product.name}`,
+        sender: 'user',
+        timestamp: new Date(),
+        isRead: true,
+        productId: product.id
+      };
+      
+      messages.push(orderMessage);
+      
+      // Add confirmation message
+      const confirmMessage = {
+        id: (Date.now() + 1).toString(),
+        text: `Thank you for your order! I've created an order for ${product.name} priced at ₹${product.price}. Would you like to complete the payment now?`,
+        sender: 'seller',
+        timestamp: new Date(Date.now() + 1000),
+        isRead: true
+      };
+      
+      messages.push(confirmMessage);
+      
+      // Create an order
+      const newOrder = {
+        id: `ORD${Math.floor(100000 + Math.random() * 900000)}`,
+        productId: product.id,
+        quantity: 1,
+        price: product.price,
+        name: product.name,
+        status: 'pending'
+      };
+      
+      orders.push(newOrder);
+      
+      // Show order badge
+      document.getElementById('order-badge').classList.remove('hidden');
+      document.getElementById('order-badge').textContent = orders.length;
+      
+      // Show chat window
+      document.getElementById('chat-window').classList.remove('hidden');
+      renderMessages();
+    }
+
+    // Render selected product in chat
+    function renderSelectedProduct() {
+      const container = document.getElementById('selected-product');
+      
+      if (!selectedProduct) {
+        container.classList.add('hidden');
+        return;
+      }
+      
+      container.classList.remove('hidden');
+      container.innerHTML = `
+        <div class="flex items-center p-2 bg-white rounded-lg shadow-sm">
+          <div class="w-10 h-10 bg-gray-100 rounded overflow-hidden">
+            <img 
+              src="${selectedProduct.image}" 
+              alt="${selectedProduct.name}"
+              class="w-full h-full object-cover" 
+            />
+          </div>
+          <div class="ml-2 flex-1">
+            <div class="text-sm font-medium">${selectedProduct.name}</div>
+            <div class="text-xs text-gray-500">₹${selectedProduct.price}</div>
+          </div>
+          <button 
+            class="text-gray-400 hover:text-gray-600"
+            onclick="clearSelectedProduct()"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" 
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      `;
+    }
+
+    // Clear selected product
+    function clearSelectedProduct() {
+      selectedProduct = null;
+      document.getElementById('selected-product').classList.add('hidden');
+    }
+
+    // Render chat messages
+    function renderMessages() {
+      const container = document.getElementById('chat-messages');
+      container.innerHTML = '';
+      
+      messages.forEach(message => {
+        const messageEl = document.createElement('div');
+        messageEl.className = `mb-3 flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`;
+        
+        const bubbleEl = document.createElement('div');
+        bubbleEl.className = message.sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-seller';
+        
+        if (message.productId) {
+          const product = products.find(p => p.id === message.productId);
+          if (product) {
+            const productInfoEl = document.createElement('div');
+            productInfoEl.className = 'mb-2 p-2 bg-white bg-opacity-20 rounded';
+            productInfoEl.innerHTML = `
+              <div class="text-xs">Product: ${product.name}</div>
+            `;
+            bubbleEl.appendChild(productInfoEl);
+          }
+        }
+        
+        const textEl = document.createElement('div');
+        textEl.textContent = message.text;
+        bubbleEl.appendChild(textEl);
+        
+        const timeEl = document.createElement('div');
+        timeEl.className = 'text-xs opacity-70 mt-1 text-right flex justify-end items-center';
+        timeEl.textContent = new Date(message.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        if (message.sender === 'user') {
+          const checkEl = document.createElement('span');
+          checkEl.className = 'ml-1';
+          checkEl.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" 
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6L9.1 15 6 12"></path>
+              <path d="M12 3L9.1 10 6 8"></path>
+            </svg>
+          `;
+          timeEl.appendChild(checkEl);
+        }
+        
+        bubbleEl.appendChild(timeEl);
+        messageEl.appendChild(bubbleEl);
+        container.appendChild(messageEl);
+      });
+      
+      // Scroll to bottom
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // Go back function for mobile back button
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+</body>
+</html>
