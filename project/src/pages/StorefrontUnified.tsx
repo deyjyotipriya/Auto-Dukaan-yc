@@ -583,7 +583,7 @@ const StorefrontUnified: React.FC = () => {
   };
   
   // Use real store URL if available, or generate a demo one
-  const storeUrl = liveUrl || (storefrontConfig?.domain ? `https://${storefrontConfig.domain}` : 'https://your-store.autodukaan.com');
+  const storeUrl = liveUrl || (storefrontConfig && storefrontConfig.domain ? `https://${storefrontConfig.domain}` : 'https://your-store.autodukaan.com');
   const storeName = storefrontConfig?.businessName || 'Your Store';
   
   if (isLoading) {
