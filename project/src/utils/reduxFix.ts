@@ -183,12 +183,32 @@ export function applyReduxFixes(): void {
     // We need to patch the global Function prototype's apply method to catch constructor errors
     const originalFunctionApply = Function.prototype.apply;
     
+    // Flag to prevent infinite recursion
+    let isApplyHandlerActive = false;
+    
     // Add a global handler for constructor errors
     Function.prototype.apply = function(thisArg, args) {
-      try {
-        // Try the original apply
+      // Prevent infinite recursion
+      if (isApplyHandlerActive) {
+        // Use the original apply directly when already handling an apply call
         return originalFunctionApply.call(this, thisArg, args);
+      }
+      
+      try {
+        // Set recursion guard
+        isApplyHandlerActive = true;
+        
+        // Try the original apply
+        const result = originalFunctionApply.call(this, thisArg, args);
+        
+        // Reset recursion guard
+        isApplyHandlerActive = false;
+        
+        return result;
       } catch (error) {
+        // Reset recursion guard before handling the error
+        isApplyHandlerActive = false;
+        
         // If it's a class constructor error, handle it
         if (error instanceof TypeError && 
             (error.message.includes('cannot be invoked without \'new\'') || 
@@ -216,13 +236,10 @@ export function applyReduxFixes(): void {
             if (this.name === 'XC') {
               console.log('Special handling for XC constructor');
               try {
-                // For XC, try to create a new object with Object.create
-                // This is an alternative approach to using 'new'
-                const instance = Object.create(this.prototype);
-                this.apply(instance, args);
-                return instance;
+                // Don't use this.apply to prevent recursion - use new directly
+                return new this(...args);
               } catch (objectCreateError) {
-                console.warn(`Failed to fix XC with Object.create: ${objectCreateError.message}`);
+                console.warn(`Failed to fix XC with new: ${objectCreateError.message}`);
               }
             }
             
@@ -242,11 +259,32 @@ export function applyReduxFixes(): void {
     
     // Store the original call method too for consistency
     const originalFunctionCall = Function.prototype.call;
+    
+    // Flag to prevent infinite recursion in call handler
+    let isCallHandlerActive = false;
+    
     Function.prototype.call = function(thisArg, ...args) {
-      try {
-        // Try the original call
+      // Prevent infinite recursion
+      if (isCallHandlerActive) {
+        // Use the original call directly when already handling a call
         return originalFunctionCall.apply(this, [thisArg, ...args]);
+      }
+      
+      try {
+        // Set recursion guard
+        isCallHandlerActive = true;
+        
+        // Try the original call
+        const result = originalFunctionCall.apply(this, [thisArg, ...args]);
+        
+        // Reset recursion guard
+        isCallHandlerActive = false;
+        
+        return result;
       } catch (error) {
+        // Reset recursion guard before handling the error
+        isCallHandlerActive = false;
+        
         // If it's a class constructor error, handle it
         if (error instanceof TypeError && 
             (error.message.includes('cannot be invoked without \'new\'') || 
@@ -274,13 +312,10 @@ export function applyReduxFixes(): void {
             if (this.name === 'XC') {
               console.log('Special handling for XC constructor');
               try {
-                // For XC, try to create a new object with Object.create
-                // This is an alternative approach to using 'new'
-                const instance = Object.create(this.prototype);
-                this.apply(instance, args);
-                return instance;
-              } catch (objectCreateError) {
-                console.warn(`Failed to fix XC with Object.create: ${objectCreateError.message}`);
+                // Don't use prototype methods that could cause recursion
+                return new this(...args);
+              } catch (newError) {
+                console.warn(`Failed to fix XC with new: ${newError.message}`);
               }
             }
             
@@ -347,7 +382,7 @@ export function applyReduxFixes(): void {
     
     // Add global diagnostic info for debugging
     win.__REDUX_FIXED__ = true;
-    win.__REDUX_FIX_VERSION__ = '1.2.0';
+    win.__REDUX_FIX_VERSION__ = '1.3.0';
     win.__REDUX_FIX_TIMESTAMP__ = new Date().toISOString();
     
     console.log('Redux fixes applied successfully');
