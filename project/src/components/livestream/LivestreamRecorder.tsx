@@ -20,8 +20,10 @@ import { Progress } from '../../components/ui/progress';
 import { Switch } from '../../components/ui/switch';
 import LivestreamRecordingService, { 
   RecordingSession, 
-  CaptureSettings 
+  CaptureSettings,
+  CapturedFrame
 } from '../../services/LivestreamRecordingService';
+import DatabaseService, { CapturedFrameRecord } from '../../services/DatabaseService';
 
 interface LivestreamRecorderProps {
   onSessionCreated?: (sessionId: string) => void;
@@ -60,6 +62,13 @@ const LivestreamRecorder: React.FC<LivestreamRecorderProps> = ({
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const timerRef = useRef<number | null>(null);
+  
+  // Initialize database
+  useEffect(() => {
+    DatabaseService.initialize().catch(error => {
+      console.error('Failed to initialize database:', error);
+    });
+  }, []);
   
   // Set up available media devices
   useEffect(() => {
@@ -112,6 +121,30 @@ const LivestreamRecorder: React.FC<LivestreamRecorderProps> = ({
       console.error('Error accessing media devices:', error);
       setError(t('livestream.recorder.permissionError'));
       setRecordingState('error');
+    }
+  };
+  
+  // Save captured frame to database
+  const saveFrameToDatabase = async (sessionId: string, frame: CapturedFrame) => {
+    try {
+      const frameRecord: CapturedFrameRecord = {
+        id: frame.id,
+        sessionId,
+        timestamp: frame.timestamp,
+        imageUrl: frame.dataUrl,
+        isProcessed: false,
+        isEdited: false,
+        metadata: {
+          sourceWidth: frame.sourceWidth,
+          sourceHeight: frame.sourceHeight,
+          batteryLevel: frame.batteryLevel
+        }
+      };
+      
+      await DatabaseService.saveCapturedFrame(frameRecord);
+      console.log('Frame saved to database:', frame.id);
+    } catch (error) {
+      console.error('Error saving frame to database:', error);
     }
   };
   
@@ -173,7 +206,7 @@ const LivestreamRecorder: React.FC<LivestreamRecorderProps> = ({
   };
   
   // Stop recording
-  const stopRecording = () => {
+  const stopRecording = async () => {
     if (!recordingSession) return;
     
     LivestreamRecordingService.stopRecording(recordingSession.id);
@@ -197,6 +230,11 @@ const LivestreamRecorder: React.FC<LivestreamRecorderProps> = ({
     const updatedSession = LivestreamRecordingService.getSession(recordingSession.id);
     if (updatedSession) {
       setRecordingSession(updatedSession);
+      
+      // Save all captured frames to database if not already saved
+      for (const frame of updatedSession.frames) {
+        await saveFrameToDatabase(updatedSession.id, frame);
+      }
     }
     
     // Notify parent component
@@ -248,10 +286,16 @@ const LivestreamRecorder: React.FC<LivestreamRecorderProps> = ({
   };
   
   // Handle frame captured event
-  const handleFrameCaptured = (event: Event) => {
+  const handleFrameCaptured = async (event: Event) => {
     const customEvent = event as CustomEvent;
     if (customEvent.detail.sessionId === recordingSession?.id) {
       setCapturedFrames(prev => prev + 1);
+      
+      // Get the frame data from the event
+      const frame = customEvent.detail.frame as CapturedFrame;
+      
+      // Save frame to database
+      await saveFrameToDatabase(recordingSession.id, frame);
       
       // Update storage usage
       if (recordingSession) {

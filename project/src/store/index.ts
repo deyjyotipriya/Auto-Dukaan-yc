@@ -7,6 +7,7 @@ import storefrontReducer from './slices/storefrontSlice';
 import livestreamReducer from './slices/livestreamSlice';
 import resultsReducer from './slices/resultsSlice';
 import buyerReducer from './slices/buyerSlice';
+import databaseReducer from './slices/databaseSlice';
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     livestream: livestreamReducer,
     results: resultsReducer,
     buyer: buyerReducer,
+    database: databaseReducer,
   },
 });
 
