@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { 
   ShoppingBag, 
@@ -17,6 +16,7 @@ import {
   Mic,
   X
 } from 'lucide-react';
+import { useAppSelector } from '../hooks/redux';
 import { selectAllProducts } from '../store/slices/productsSlice';
 import { selectStorefrontConfig } from '../store/slices/storefrontSlice';
 
@@ -44,8 +44,8 @@ const StorefrontBuyer: React.FC = () => {
   const navigate = useNavigate();
   const { storeId } = useParams<{ storeId: string }>();
   
-  const allProducts = useSelector(selectAllProducts);
-  const storefrontConfig = useSelector(selectStorefrontConfig);
+  const allProducts = useAppSelector(selectAllProducts);
+  const storefrontConfig = useAppSelector(selectStorefrontConfig);
 
   // State for selected category and search
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
