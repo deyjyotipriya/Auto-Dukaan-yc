@@ -16,7 +16,7 @@ import CatalogBrowser from '../components/livestream/CatalogBrowser';
 import SessionManager from '../components/livestream/SessionManager';
 import { Button } from '../components/ui/button';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
-import { DatabaseService, CapturedFrameRecord, SessionRecord } from '../services/DatabaseService';
+import DatabaseService, { CapturedFrameRecord, SessionRecord } from '../services/DatabaseService';
 import { 
   fetchSessions, 
   createSession, 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
-import { DatabaseService, CapturedFrameRecord, ProductRecord } from '../../services/DatabaseService';
+import DatabaseService, { CapturedFrameRecord, ProductRecord } from '../../services/DatabaseService';
 import { Switch } from '../ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import ImageEditor from './ImageEditor';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { DatabaseService, CapturedFrameRecord, ProductRecord, SessionRecord } from '../../services/DatabaseService';
+import DatabaseService, { CapturedFrameRecord, ProductRecord, SessionRecord } from '../../services/DatabaseService';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';

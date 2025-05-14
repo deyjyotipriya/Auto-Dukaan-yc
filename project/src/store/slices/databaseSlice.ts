@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { 
-  DatabaseService, 
+import DatabaseService, { 
   ProductRecord, 
   CapturedFrameRecord, 
   SessionRecord,
