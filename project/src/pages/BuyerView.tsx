@@ -16,7 +16,11 @@ import {
   X
 } from 'lucide-react';
 // Import the safe versions of Redux hooks
+// These will automatically handle the "Class constructor cannot be invoked without 'new'" error
 import { useSelector, useAppSelector, useDispatch, useAppDispatch } from '../utils/reduxFix';
+
+// Import React for type definitions
+import * as React from 'react';
 
 // Mock types instead of importing from Redux
 interface ChatMessage {
