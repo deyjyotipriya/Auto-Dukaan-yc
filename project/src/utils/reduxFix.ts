@@ -167,11 +167,136 @@ export const useAppDispatch = () => useDispatch();
  * Call this function in your index.js/main.js before rendering your app
  */
 export function applyReduxFixes(): void {
+  // Prevent applying fixes twice
+  if ((window as any).__REDUX_FIXED__) {
+    console.log('Redux fixes already applied, skipping');
+    return;
+  }
+
   try {
     console.log('Applying Redux fixes...');
     
     // Define React in global scope for version checking if needed
     const win = window as any;
+    
+    // Add special handler for XC constructor error (and other similar errors)
+    // We need to patch the global Function prototype's apply method to catch constructor errors
+    const originalFunctionApply = Function.prototype.apply;
+    
+    // Add a global handler for constructor errors
+    Function.prototype.apply = function(thisArg, args) {
+      try {
+        // Try the original apply
+        return originalFunctionApply.call(this, thisArg, args);
+      } catch (error) {
+        // If it's a class constructor error, handle it
+        if (error instanceof TypeError && 
+            (error.message.includes('cannot be invoked without \'new\'') || 
+             error.message.includes('Class constructor'))) {
+          
+          console.warn(`Redux fix caught constructor error: ${error.message}`);
+          
+          // Try to determine if this is a React or Redux component
+          const isLikelyReactOrRedux = this.name && 
+            (this.name.includes('Component') || 
+             this.name.includes('Redux') || 
+             this.name.includes('Provider') ||
+             this.name === 'XC' ||
+             // Common minified class names in Redux toolkit
+             this.name === 'X' ||
+             this.name === 'Y' ||
+             this.name === 'Z' ||
+             // Add more single-character class names that might be from minified Redux code
+             /^[A-Z]{1,2}$/.test(this.name));
+             
+          if (isLikelyReactOrRedux) {
+            console.log(`Attempting to fix constructor call for: ${this.name || 'unknown constructor'}`);
+            
+            // Special handling for XC which seems particularly problematic
+            if (this.name === 'XC') {
+              console.log('Special handling for XC constructor');
+              try {
+                // For XC, try to create a new object with Object.create
+                // This is an alternative approach to using 'new'
+                const instance = Object.create(this.prototype);
+                this.apply(instance, args);
+                return instance;
+              } catch (objectCreateError) {
+                console.warn(`Failed to fix XC with Object.create: ${objectCreateError.message}`);
+              }
+            }
+            
+            // Try instantiating with new
+            try {
+              return new this(...args);
+            } catch (newError) {
+              console.warn(`Failed to fix with new keyword: ${newError.message}`);
+            }
+          }
+        }
+        
+        // Re-throw if we couldn't handle it
+        throw error;
+      }
+    };
+    
+    // Store the original call method too for consistency
+    const originalFunctionCall = Function.prototype.call;
+    Function.prototype.call = function(thisArg, ...args) {
+      try {
+        // Try the original call
+        return originalFunctionCall.apply(this, [thisArg, ...args]);
+      } catch (error) {
+        // If it's a class constructor error, handle it
+        if (error instanceof TypeError && 
+            (error.message.includes('cannot be invoked without \'new\'') || 
+             error.message.includes('Class constructor'))) {
+          
+          console.warn(`Redux fix caught constructor error: ${error.message}`);
+          
+          // Try to determine if this is a React or Redux component
+          const isLikelyReactOrRedux = this.name && 
+            (this.name.includes('Component') || 
+             this.name.includes('Redux') || 
+             this.name.includes('Provider') ||
+             this.name === 'XC' ||
+             // Common minified class names in Redux toolkit
+             this.name === 'X' ||
+             this.name === 'Y' ||
+             this.name === 'Z' ||
+             // Add more single-character class names that might be from minified Redux code
+             /^[A-Z]{1,2}$/.test(this.name));
+             
+          if (isLikelyReactOrRedux) {
+            console.log(`Attempting to fix constructor call for: ${this.name || 'unknown constructor'}`);
+            
+            // Special handling for XC which seems particularly problematic
+            if (this.name === 'XC') {
+              console.log('Special handling for XC constructor');
+              try {
+                // For XC, try to create a new object with Object.create
+                // This is an alternative approach to using 'new'
+                const instance = Object.create(this.prototype);
+                this.apply(instance, args);
+                return instance;
+              } catch (objectCreateError) {
+                console.warn(`Failed to fix XC with Object.create: ${objectCreateError.message}`);
+              }
+            }
+            
+            // Try instantiating with new
+            try {
+              return new this(...args);
+            } catch (newError) {
+              console.warn(`Failed to fix with new keyword: ${newError.message}`);
+            }
+          }
+        }
+        
+        // Re-throw if we couldn't handle it
+        throw error;
+      }
+    };
     
     // Try to detect store directly from Redux DevTools
     if (win && win.__REDUX_DEVTOOLS_EXTENSION__ && win.__REDUX_DEVTOOLS_EXTENSION__.store) {
@@ -222,7 +347,7 @@ export function applyReduxFixes(): void {
     
     // Add global diagnostic info for debugging
     win.__REDUX_FIXED__ = true;
-    win.__REDUX_FIX_VERSION__ = '1.1.0';
+    win.__REDUX_FIX_VERSION__ = '1.2.0';
     win.__REDUX_FIX_TIMESTAMP__ = new Date().toISOString();
     
     console.log('Redux fixes applied successfully');
