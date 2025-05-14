@@ -1,10 +1,16 @@
 // Import the Redux fixes first to ensure they're applied early
-import { applyReduxFixes, checkReduxCompatibility } from './utils/reduxFix';
+import { applyReduxFixes, checkReduxCompatibility, diagnoseReduxIssues } from './utils/reduxFix';
 
 // Apply Redux fixes before anything else
 if (typeof window !== 'undefined') {
   console.log('Applying Redux fixes before initializing app...');
-  applyReduxFixes();
+  
+  // Enhanced version with all protection mechanisms enabled
+  applyReduxFixes({
+    patchMinifiedConstructors: true, // Enable specific UC/XC constructor patching
+    forceReapply: true, // Make sure patches are applied even if already applied
+    mockStateOnFailure: true // Create mock state for fallbacks
+  });
 }
 
 import { StrictMode } from 'react';
