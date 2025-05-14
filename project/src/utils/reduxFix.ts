@@ -162,118 +162,99 @@ export const useDispatch = function(): AppDispatch {
 // Export a typed version as well
 export const useAppDispatch = () => useDispatch();
 
-// Store original function methods
-const originalApply = Function.prototype.apply;
-const originalCall = Function.prototype.call;
-
-// Cache for already processed functions to prevent recursion
-const processedApply = new WeakMap<Function, boolean>();
-const processedCall = new WeakMap<Function, boolean>();
-
-// Helper function to create a new instance with any constructor
-function createInstance(Constructor: Function, args: any[]) {
-  // First, try the simplest method
+// Create safe version of React-Redux Provider if needed
+function createSafeProvider() {
   try {
+    const win = window as any;
+    if (win.ReactRedux && win.ReactRedux.Provider) {
+      console.log('Creating safe Redux Provider');
+      
+      const OriginalProvider = win.ReactRedux.Provider;
+      
+      // Create a wrapper that safely instantiates the original provider
+      function SafeProvider(props: any) {
+        // Store ref for our hooks to use
+        if (props.store && props.store.getState) {
+          win.__REDUX_STATE__ = props.store.getState();
+          
+          // Set up listener if possible
+          try {
+            props.store.subscribe(() => {
+              win.__REDUX_STATE__ = props.store.getState();
+            });
+          } catch (err) {
+            console.warn('Could not set up Redux state listener:', err);
+          }
+        }
+        
+        // Safely instantiate the original provider
+        try {
+          return new OriginalProvider(props);
+        } catch (err) {
+          console.warn('Error creating Provider with new:', err);
+          
+          // Try alternative approach if new fails
+          try {
+            const instance = Object.create(OriginalProvider.prototype);
+            OriginalProvider.call(instance, props);
+            return instance;
+          } catch (err2) {
+            console.error('All Provider creation methods failed:', err2);
+            
+            // Last resort - create a minimal compatible implementation
+            return {
+              props,
+              getChildContext() {
+                return { store: props.store };
+              },
+              render() {
+                return props.children;
+              }
+            };
+          }
+        }
+      }
+      
+      return {
+        replace: () => {
+          win.ReactRedux.Provider = SafeProvider;
+          console.log('Replaced Redux Provider with safe version');
+        }
+      };
+    }
+    return null;
+  } catch (error) {
+    console.warn('Failed to create safe provider:', error);
+    return null;
+  }
+}
+
+// Helper to safely instantiate a class
+function safeInstantiate(Constructor: Function, args: any[] = []) {
+  // Try different instantiation methods
+  try {
+    // Method 1: Direct new operator
     return new Constructor(...args);
   } catch (error) {
-    console.log('Simple new failed, trying alternative instantiation');
+    console.warn(`Error instantiating with new:`, error);
     
-    // If that fails, try Function.prototype.bind approach (more robust for some cases)
     try {
-      // @ts-ignore - This is a hack to make the constructor work
-      const BoundConstructor = Constructor.bind.apply(Constructor, [null, ...args]);
+      // Method 2: Function.bind approach
+      const BoundConstructor = Function.prototype.bind.apply(Constructor, [null, ...args]);
       return new BoundConstructor();
-    } catch (bindError) {
-      console.warn('Failed to create instance with bind:', bindError);
+    } catch (error2) {
+      console.warn(`Error instantiating with bind:`, error2);
       
-      // Last resort, try Object.create
       try {
+        // Method 3: Object.create approach
         const instance = Object.create(Constructor.prototype);
         Constructor.apply(instance, args);
         return instance;
-      } catch (createError) {
-        console.warn('Failed to create instance with Object.create:', createError);
-        throw error; // Throw the original error if all approaches fail
+      } catch (error3) {
+        console.error(`All instantiation methods failed:`, error3);
+        throw error; // Re-throw the original error
       }
     }
-  }
-}
-
-// Helper to determine if this is likely a React or Redux class
-function isReactOrReduxClass(fn: Function) {
-  if (!fn.name) return false;
-  
-  const name = fn.name;
-  
-  return (
-    name.includes('Component') || 
-    name.includes('Redux') || 
-    name.includes('Provider') ||
-    // Known minified constructor names
-    name === 'XC' || 
-    name === 'X' ||
-    name === 'Y' ||
-    name === 'Z' ||
-    // Any single letter or two-letter uppercase class names
-    /^[A-Z]{1,2}$/.test(name)
-  );
-}
-
-// Safer implementation to patch Function.prototype.apply
-function patchedApply(this: Function, thisArg: any, args: any[]) {
-  // If we're already processing this function, use the original to prevent recursion
-  if (processedApply.has(this)) {
-    return originalApply.call(this, thisArg, args);
-  }
-  
-  processedApply.set(this, true);
-  
-  try {
-    return originalApply.call(this, thisArg, args);
-  } catch (error) {
-    // If it's a constructor error and likely a React/Redux component
-    if (error instanceof TypeError && 
-        (error.message.includes('cannot be invoked without \'new\'') || 
-         error.message.includes('Class constructor'))) {
-      
-      if (isReactOrReduxClass(this)) {
-        console.warn(`Redux fix: Caught constructor error for ${this.name}. Attempting to fix.`);
-        return createInstance(this, args || []);
-      }
-    }
-    
-    throw error;
-  } finally {
-    processedApply.delete(this);
-  }
-}
-
-// Safer implementation to patch Function.prototype.call
-function patchedCall(this: Function, thisArg: any, ...args: any[]) {
-  // If we're already processing this function, use the original to prevent recursion
-  if (processedCall.has(this)) {
-    return originalCall.apply(this, [thisArg, ...args]);
-  }
-  
-  processedCall.set(this, true);
-  
-  try {
-    return originalCall.apply(this, [thisArg, ...args]);
-  } catch (error) {
-    // If it's a constructor error and likely a React/Redux component
-    if (error instanceof TypeError && 
-        (error.message.includes('cannot be invoked without \'new\'') || 
-         error.message.includes('Class constructor'))) {
-      
-      if (isReactOrReduxClass(this)) {
-        console.warn(`Redux fix: Caught constructor error for ${this.name}. Attempting to fix.`);
-        return createInstance(this, args);
-      }
-    }
-    
-    throw error;
-  } finally {
-    processedCall.delete(this);
   }
 }
 
@@ -294,9 +275,14 @@ export function applyReduxFixes(): void {
     // Define React in global scope for version checking if needed
     const win = window as any;
     
-    // Apply the patches using a safer approach
-    Function.prototype.apply = patchedApply;
-    Function.prototype.call = patchedCall;
+    // DO NOT patch global Function prototypes - they cause infinite recursion
+    // Instead, we'll provide more targeted fixes
+    
+    // Create a safe version of Provider if possible
+    const safeProvider = createSafeProvider();
+    if (safeProvider) {
+      safeProvider.replace();
+    }
     
     // Try to detect store directly from Redux DevTools
     if (win && win.__REDUX_DEVTOOLS_EXTENSION__ && win.__REDUX_DEVTOOLS_EXTENSION__.store) {
@@ -316,39 +302,55 @@ export function applyReduxFixes(): void {
       }
     } else {
       console.log('Redux DevTools extension not found, applying alternative fixes');
-      
-      // Patch React-Redux Provider if needed
-      try {
-        if (win.ReactRedux && win.ReactRedux.Provider) {
-          const OriginalProvider = win.ReactRedux.Provider;
-          
-          // Replace Provider with one that ensures store is available
-          win.ReactRedux.Provider = function SafeProvider(props: any) {
-            // Store ref for our hooks to use
-            if (props.store && props.store.getState) {
-              win.__REDUX_STATE__ = props.store.getState();
-              
-              // Set up listener
-              props.store.subscribe(() => {
-                win.__REDUX_STATE__ = props.store.getState();
-              });
-            }
-            
-            // Call original with new
-            return new OriginalProvider(props);
-          };
-          
-          console.log('Patched Redux Provider successfully');
-        }
-      } catch (patchError) {
-        console.warn('Failed to patch Redux Provider:', patchError);
-      }
     }
     
     // Add global diagnostic info for debugging
     win.__REDUX_FIXED__ = true;
-    win.__REDUX_FIX_VERSION__ = '1.4.0';
+    win.__REDUX_FIX_VERSION__ = '2.0.0';
     win.__REDUX_FIX_TIMESTAMP__ = new Date().toISOString();
+    win.__safeInstantiate = safeInstantiate; // Export the safe instantiation function globally
+    
+    // Override React.createElement to handle 'new' errors in component instantiation
+    try {
+      if (win.React && win.React.createElement) {
+        console.log('Attempting to make React.createElement safer...');
+        
+        const originalCreateElement = win.React.createElement;
+        
+        win.React.createElement = function safeCreateElement(type: any, props: any, ...children: any[]) {
+          try {
+            return originalCreateElement.call(this, type, props, ...children);
+          } catch (error) {
+            if (error instanceof TypeError && 
+                (error.message.includes('cannot be invoked without \'new\'') || 
+                 error.message.includes('Class constructor'))) {
+              
+              // Only try to fix component classes, not DOM elements
+              if (typeof type === 'function') {
+                console.warn(`Caught constructor error in createElement for: ${type.name || 'unknown'}`);
+                
+                try {
+                  // For component classes, try to instantiate safely
+                  const component = safeInstantiate(type, [props]);
+                  
+                  // If it's a class component, call render
+                  if (component.render) {
+                    return originalCreateElement.call(this, 
+                      (compProps: any) => component.render.call(component), 
+                      props, ...children);
+                  }
+                } catch (fixError) {
+                  console.warn('Failed to fix createElement error:', fixError);
+                }
+              }
+            }
+            throw error; // Re-throw if we couldn't fix it
+          }
+        };
+      }
+    } catch (reactError) {
+      console.warn('Could not patch React.createElement:', reactError);
+    }
     
     console.log('Redux fixes applied successfully');
   } catch (error) {
